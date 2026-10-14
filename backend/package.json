@@ -1,0 +1,14 @@
+{
+  "name": "@cmg/backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WMS-Tec API 服务",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
