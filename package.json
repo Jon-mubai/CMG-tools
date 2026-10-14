@@ -1,0 +1,10 @@
+{
+  "name": "cmg-tools",
+  "private": true,
+  "version": "1.0.0",
+  "description": "WMS-Tec cucumber inventory monorepo",
+  "scripts": {
+    "build:frontend": "node frontend/scripts/build.js",
+    "start:backend": "node backend/src/server.js"
+  }
+}

@@ -1,0 +1,23 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+dist/
+.cache/
+*.local
+warehouse-next/node_modules/
+warehouse-next/.next/
+
+backend/data/
+*.jsonl
+
+# Large vendor binaries — restore via frontend/vendor/README.md
+frontend/vendor/xlsx.full.min.js
+frontend/vendor/exceljs.min.js
+frontend/vendor/icons-ant-design.json
+frontend/modules/park3d/vendor/three.min.js
+frontend/modules/park3d/vendor/three.module.js
+modules/park3d/vendor/three.min.js
+modules/park3d/vendor/three.module.js
