@@ -1,0 +1,103 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/pages/22-pages-globalNav.css — extracted from inventory-check.html */
+/* ===== 盘点数据页：全局导航（Apple Global Nav 形态） =====
+       近黑半透明 + 毛玻璃 + 12px 细字 + 居中链接，
+       sticky 吸附在顶栏下方，作为本页三大板块的分区导航。 */
+    .global-nav {
+      position: sticky;
+      top: var(--topbar-h, 62px);
+      z-index: 90;
+      margin: -20px -24px 40px;
+      background: rgba(23, 23, 23, 0.88);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .gn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 20px;
+      overflow-x: auto;
+    }
+    .gn-links {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      white-space: nowrap;
+    }
+    .gn-link {
+      display: block;
+      height: 44px;
+      line-height: 44px;
+      padding: 0 18px;
+      font-size: 12px;
+      letter-spacing: 0.01em;
+      color: rgba(245, 245, 247, 0.72);
+      text-decoration: none;
+      transition: color 0.15s ease;
+      position: relative;
+    }
+    .gn-link:hover { color: #f5f5f7; }
+    .gn-link.active { color: #f5f5f7; }
+    .gn-link.active::after {
+      content: '';
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 0;
+      height: 2px;
+      background: #f5f5f7;
+    }
+    /* 锚点定位时避开 sticky 顶栏 + 全局导航 */
+    .gn-anchor { scroll-margin-top: calc(var(--topbar-h, 62px) + 60px); }
+    /* 盘点数据页三个独立子页：同一时刻只渲染当前板块 */
+    .scan-view { display: none; }
+    .scan-view.active { display: block; animation: fadeIn 0.22s ease; }
+    @media (max-width: 768px) {
+      .global-nav { margin: -14px -16px 30px; }
+      .gn-inner { justify-content: flex-start; }
+      .gn-link { padding: 0 14px; }
+      .gn-link.active::after { left: 14px; right: 14px; }
+    }
+
+    .empty {
+      text-align: center;
+      padding: 48px 12px !important;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .empty .empty-text { line-height: 1.7; margin-bottom: 16px; }
+    .empty .empty-text strong {
+      display: block;
+      color: var(--text-secondary);
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .code-cell { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--text-secondary); }
+    .name-cell { max-width: 200px; font-weight: 500; }
+    .op-cell { display: table-cell; text-align: center; white-space: nowrap; width: 88px; vertical-align: middle; }
+    .btn-del {
+      background: #f5f5f5;
+      color: #171717;
+      border: 1px solid #d4d4d4;
+      padding: 5px 12px;
+      border-radius: 7px;
+      font-size: 13px;
+      cursor: pointer;
+      min-height: 30px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-del:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .btn-del:active { transform: scale(0.95); }

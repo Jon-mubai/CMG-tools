@@ -1,0 +1,113 @@
+/* css/00-tokens.css — extracted from inventory-check.html */
+iconify-icon { display: inline-block; vertical-align: middle; line-height: 1; }
+    :root {
+      --font-family-base: "Source Han Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --font-size-title: 12px;
+      --font-size-body: 10px;
+      --fin-primary: #2563eb; /* 备用金/登录等场景主色蓝，与全局 --primary（近黑）解耦 */
+      --fin-table-head-bg: #f5f5f5;
+      --fin-table-border: #e5e5e5;
+
+      --primary: #1a1a1a;
+      --primary-light: #404040;
+      --primary-dark: #000000;
+      --primary-bg: #f5f5f5;
+      --primary-border: #d4d4d4;
+      --success: #1a1a1a;
+      --success-bg: #f5f5f5;
+      --warning: #525252;
+      --warning-bg: #fafafa;
+      --danger: #1a1a1a;
+      --danger-bg: #f5f5f5;
+      --bg: #ffffff;
+      --bg-gradient: #ffffff;
+      --card: #ffffff;
+      --border: #e5e5e5;
+      --border-light: #f5f5f5;
+      --text: #171717;
+      --text-secondary: #525252;
+      --muted: #a3a3a3;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --sidebar-width: 268px;
+      /* 统一菜单外壳：单卡片内含「左图标栏 + 右名称栏」，整体宽度 = 两者之和 + 间距
+         宽度按实测内容收敛：最长菜单文本「数据看板/新增使用登记」约 90px，
+         加左缩进 30px + 右内边距 24px，右栏取 176px 即可，避免右侧大片留白 */
+      --shell-width: 264px;
+      /* 图标栏：图标 + 两行中文，略收紧以减少右侧留白 */
+      --shell-rail-width: 84px;
+      --shell-gap: 8px;
+      /* 常驻模块图标栏宽度：长期保留，不随侧栏折叠变化。
+   需容纳「图标 + 两行中文名称」，取 96px */
+      --rail-width: 96px;
+      --rail-gap: 12px;
+      /* 菜单字号层级：一级菜单 14px / 二级菜单 12px。
+         两个值各自独立声明，不用 calc 推导 —— 层级差只有 2px，
+         若按倍数推导会因取整产生视觉偏差，直接定值更可控。 */
+      --fs-menu-1: 14px;
+      --fs-menu-2: 13px;
+      --menu-row-h: 36px;   /* 菜单行高，与字号共同保证点击区域不因缩小而变得难以命中 */
+      /* ===== 间距刻度（4px 基准，UI Handbook）=====
+         组件内部 4–12 · 组件之间 16–24 · 区块之间 48–96
+         亲密度：标签与控件近（8），字段组之间远（24） */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+      --space-7: 48px;
+      --space-8: 64px;
+      --space-inset: 24px;      /* 页面左右留白 px-6 */
+      --space-field-label: 8px; /* 标签 → 输入 */
+      --space-field-group: 24px;/* 字段组之间 */
+      --space-card-gap: 16px;   /* 卡片之间 */
+      --space-section: 48px;    /* 大板块之间 */
+      --content-max: 1152px;    /* max-w-6xl */
+
+
+      /* ===== 仓库管理：园区 / 库存设计令牌 =====
+         配色基调：淡蓝 + 白（不再使用纯黑白灰）。
+         园区以「白 → 淡蓝」的明度梯度表达空间纵深：
+           · 地面/网格用极淡蓝灰打底，保持画面通透不抢主体；
+           · 填充率色阶用「淡蓝 → 纯白」编码占用率（越满越白，越空越蓝），
+             语义与原先的灰阶一致（0=空最深 → 1=满最浅），但整体落在蓝色家族；
+           · 强调色改为中蓝，用于选中态与交互高亮，颜色语���更明确。 */
+      --park-ground: #eef4fb;        /* 园区地面：极淡蓝 */
+      --park-ground-2: #dde9f6;      /* 地面渐变远端：淡蓝 */
+      --park-grid: rgba(56, 118, 189, 0.11);   /* 网格线：淡蓝 */
+      --park-bldg: #ffffff;          /* 建筑正面：纯白 */
+      --park-bldg-side: #c9dcf0;     /* 建筑侧面：淡蓝（背光面） */
+      --park-bldg-top: #f2f8ff;      /* 建筑顶面：极淡蓝（受光面） */
+      --park-bldg-edge: rgba(45, 96, 160, 0.18);
+      --park-shadow: rgba(31, 74, 130, 0.12);
+      --park-accent: #2f7fd4;        /* 强调色：中蓝 */
+      /* 立体构件色阶（淡蓝家族，按受光程度递变） */
+      --park-board-top: linear-gradient(180deg, #ffffff, #f4f9ff);  /* 层板顶面：最亮 */
+      --park-side-l: linear-gradient(90deg, #e4f0fc, #c6dcf1);     /* 左侧板：受光 */
+      --park-side-r: linear-gradient(90deg, #a8c6e4, #c2d9ef);     /* 右侧板：背光 */
+      --park-back: linear-gradient(180deg, #b8d2eb, #95b9d9);       /* 背板：更暗（加深以提升深度感） */
+      --park-post: linear-gradient(180deg, #8ab5dc, #2c5987);        /* 立柱：更饱和的深蓝 */
+      --park-rail: linear-gradient(180deg, #6d9ac8, #2f5c8c);        /* 前挡杆 */
+      --park-top-cap: linear-gradient(180deg, #ffffff, #dcebf9);    /* 顶板 */
+      --park-base: linear-gradient(180deg, #95b9d9, #6f96bd);       /* 底座：压住地面，避免架体"悬空"感 */
+      /* 填充率色阶（0=空 → 1=满）：淡蓝 → 白 */
+      --fill-0: #9ec4e8;
+      --fill-1: #bcd8f0;
+      --fill-2: #dcebf8;
+      --fill-3: #f4faff;
+      --park-ease: cubic-bezier(0.16, 1, 0.3, 1);
+      /* ===== 数据看板色板 =====
+         全局 UI 保持黑白灰，但图表/指标需要可扫读的彩色编码：
+         冷色（indigo/sky/teal）表示结构与流入，暖色（amber/rose/violet）表示风险与消耗。
+         同一色既用于图表切片，也用于对应指标卡的左侧色条，形成一套统一编码。 */
+      --dash-c1: #4f46e5;   /* indigo  主结构 / 在管仓库 */
+      --dash-c2: #0ea5e9;   /* sky     流入 / 入库 */
+      --dash-c3: #0d9488;   /* teal    平稳 / 对平 */
+      --dash-c4: #f59e0b;   /* amber   预警 / 滞销 */
+      --dash-c5: #e11d48;   /* rose    流出 / 盘亏 */
+      --dash-c6: #8b5cf6;   /* violet  其他 / 长尾 */
+    }

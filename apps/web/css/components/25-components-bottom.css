@@ -1,0 +1,27 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/25-components-bottom.css — extracted from inventory-check.html */
+/* ===== 移动端底部扫码栏 ===== */
+    .bottom-bar {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 10px 14px calc(10px + var(--safe-bottom));
+      z-index: 150;
+      gap: 10px;
+      align-items: center;
+    }
+    .bottom-bar .scan-input {
+      flex: 1;
+      max-width: none;
+      padding: 11px 14px;
+      font-size: 15px;
+    }
+    .bottom-bar .btn { flex-shrink: 0; min-width: 72px; }

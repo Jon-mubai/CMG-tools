@@ -1,0 +1,64 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10
+ * Role: Full-Stack Developer
+ */
+/* css/components/10-components-tabs.css — extracted from inventory-check.html */
+/* ===== 库存管理：子页标签导航（置于 KPI 下方、内容区上方） ===== */
+    .sub-tabs {
+      display: flex;
+      gap: 2px;
+      margin: 0 0 18px;
+      padding: 0 2px;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sub-tabs::-webkit-scrollbar { display: none; }
+    .sub-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 16px;
+      border: 0;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      position: relative;
+      transition: color 0.15s ease;
+    }
+    .sub-tab::after {
+      content: '';
+      position: absolute;
+      left: 12px; right: 12px; bottom: -1px;
+      height: 2px;
+      background: transparent;
+      border-radius: 1px;
+      transition: background 0.18s ease;
+    }
+    .sub-tab:hover { color: var(--text); }
+    .sub-tab.active { color: var(--text); font-weight: 600; }
+    .sub-tab.active::after { background: var(--text); }
+    .sub-tab-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #f0f0f0;
+      color: var(--text);
+      font-size: 11px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .sub-tab-badge.warn { background: var(--text); color: #fff; }
+    .sub-tab-badge[style*="display: none"] { display: none; }
+    /* 面板：同一时刻只显示当前标签内容 */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn 0.22s ease; }

@@ -1,0 +1,908 @@
+<body>
+  <div class="app-layout">
+    <!-- 左侧菜单 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <h1><span class="logo-icon"><iconify-icon icon="ant-design:appstore-outlined" width="18" height="18"></iconify-icon></span><span class="logo-text">cucumber</span></h1>
+      </div>
+      <nav class="sidebar-menu">
+        <!-- 一级菜单统一为可折叠组：组标题可点击展开/折叠，二级菜单项缩进，与仓库管理样式一致 -->
+        <div class="menu-group" data-group="work">
+          <button type="button" class="menu-group-head" aria-expanded="true">
+            <iconify-icon icon="ant-design:appstore-outlined" width="14" height="14"></iconify-icon>
+            <span>工作台</span>
+            <iconify-icon class="menu-group-arrow" icon="ant-design:down-outlined" width="12" height="12"></iconify-icon>
+          </button>
+          <div class="menu-group-body">
+            <div class="menu-item active" data-page="dashboard">
+              <iconify-icon class="menu-icon" icon="ant-design:dashboard-outlined" width="18" height="18"></iconify-icon>
+              <span>数据看板</span>
+            </div>
+            <div class="menu-item" data-page="scan" title="数据导入 + 扫码录入实盘">
+              <iconify-icon class="menu-icon" icon="ant-design:scan-outlined" width="18" height="18"></iconify-icon>
+              <span>扫码盘点</span>
+              <span class="menu-badge" id="menuImportedBadge" style="display:none;">0</span>
+              <span class="menu-badge" id="menuScannedBadge" style="display:none;">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-group" data-group="data">
+          <button type="button" class="menu-group-head" aria-expanded="true">
+            <iconify-icon icon="ant-design:database-outlined" width="14" height="14"></iconify-icon>
+            <span>数据</span>
+            <iconify-icon class="menu-group-arrow" icon="ant-design:down-outlined" width="12" height="12"></iconify-icon>
+          </button>
+          <div class="menu-group-body">
+            <div class="menu-item" data-page="detail" title="盘点明细">
+              <iconify-icon class="menu-icon" icon="ant-design:unordered-list-outlined" width="18" height="18"></iconify-icon>
+              <span>盘点明细</span>
+              <span class="menu-badge" id="menuTotalBadge">0</span>
+            </div>
+            <div class="menu-item" data-page="scan-data" title="盘点数据（已保存的盘点结果）">
+              <iconify-icon class="menu-icon" icon="ant-design:database-outlined" width="18" height="18"></iconify-icon>
+              <span>盘点数据</span>
+              <span class="menu-badge" id="menuScanDataBadge">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 一级菜单：仓库管理（含 2 个二级菜单，与其他组层级样式统一） -->
+        <div class="menu-group" data-group="wh">
+          <button type="button" class="menu-group-head" aria-expanded="true">
+            <iconify-icon icon="ant-design:home-outlined" width="14" height="14"></iconify-icon>
+            <span>仓库管理</span>
+            <iconify-icon class="menu-group-arrow" icon="ant-design:down-outlined" width="12" height="12"></iconify-icon>
+          </button>
+          <div class="menu-group-body">
+            <div class="menu-item" data-page="wh-park" title="仓库可视化 · 3D 园区">
+              <iconify-icon class="menu-icon" icon="ant-design:database-outlined" width="18" height="18"></iconify-icon>
+              <span>仓库可视化</span>
+              <span class="menu-sub-mark" aria-hidden="true"></span>
+            </div>
+            <div class="menu-item" data-page="wh-stock" title="库存管理 · 出入库与预警分析">
+              <iconify-icon class="menu-icon" icon="ant-design:line-chart-outlined" width="18" height="18"></iconify-icon>
+              <span>库存管理</span>
+              <span class="menu-badge" id="menuAlertBadge" style="display:none;">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="menu-group" data-group="help">
+          <button type="button" class="menu-group-head" aria-expanded="true">
+            <iconify-icon icon="ant-design:bulb-outlined" width="14" height="14"></iconify-icon>
+            <span>帮助</span>
+            <iconify-icon class="menu-group-arrow" icon="ant-design:down-outlined" width="12" height="12"></iconify-icon>
+          </button>
+          <div class="menu-group-body">
+            <div class="menu-item" data-page="help" title="系统说明">
+              <iconify-icon class="menu-icon" icon="ant-design:bulb-outlined" width="18" height="18"></iconify-icon>
+              <span>系统说明</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar-toggle" id="sidebarToggle" title="收起 / 展开菜单" role="button" tabindex="0" aria-label="收起或展开侧边菜单">
+        <iconify-icon icon="ant-design:menu-fold-outlined" width="16" height="16"></iconify-icon>
+        <span class="toggle-text">收起菜单</span>
+      </div>
+      <div class="sidebar-footer" title="系统由 MuBai 提供支持">
+        系统由 MuBai 提供支持
+      </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- 右侧内容 -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menuToggle" aria-label="打开菜单"><iconify-icon icon="ant-design:menu-outlined" width="18" height="18"></iconify-icon></button>
+          <div>
+            <div class="page-title" id="pageTitle">数据看板</div>
+            <div class="page-subtitle" id="pageSubtitle">实时查看盘点进度与差异统计</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-stat" id="topbarStat">总商品 0</div>
+        </div>
+      </header>
+
+      <div class="content-area">
+        <div class="lib-error" id="libError"></div>
+
+        <!-- 页面1：数据看板（汇总盘点 / 仓库 / 库存 / 滞销四个模块的实时数据） -->
+        <section class="page-section active" id="page-dashboard">
+          <!-- ① 盘点进度：本次盘点的完成情况 -->
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:area-chart-outlined" width="18" height="18"></iconify-icon>
+              盘点执行
+              <span class="card-hint" id="dashExecHint">— 待导入账面数据</span>
+            </div>
+            <div class="stats stats-5">
+              <button type="button" class="stat-item stat-link" data-go="scan-import">
+                <iconify-icon class="stat-ico" icon="ant-design:database-outlined" width="18" height="18"></iconify-icon>
+                <div class="num" id="stat-total">0</div>
+                <div class="label">账面商品</div>
+              </button>
+              <div class="stat-item ok">
+                <iconify-icon class="stat-ico" icon="ant-design:check-circle-outlined" width="18" height="18"></iconify-icon>
+                <div class="num" id="stat-balanced">0</div>
+                <div class="label">对平</div>
+              </div>
+              <div class="stat-item up">
+                <iconify-icon class="stat-ico" icon="ant-design:arrow-up-outlined" width="18" height="18"></iconify-icon>
+                <div class="num" id="stat-surplus">0</div>
+                <div class="label">盘盈</div>
+              </div>
+              <div class="stat-item down">
+                <iconify-icon class="stat-ico" icon="ant-design:arrow-down-outlined" width="18" height="18"></iconify-icon>
+                <div class="num" id="stat-deficit">0</div>
+                <div class="label">盘亏</div>
+              </div>
+              <button type="button" class="stat-item stat-link" data-go="scan">
+                <iconify-icon class="stat-ico" icon="ant-design:scan-outlined" width="18" height="18"></iconify-icon>
+                <div class="num" id="stat-scanned">0</div>
+                <div class="label">已扫</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- ② 仓库与库存：取自「库存管理」同源数据 -->
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:home-outlined" width="18" height="18"></iconify-icon>
+              仓库与库存
+              <span class="card-hint">数据与「库存管理」实时同源</span>
+              <button type="button" class="btn btn-outline btn-sm" data-go="wh-stock" style="margin-left:auto;">库存管理<iconify-icon icon="ant-design:arrow-right-outlined" width="13" height="13"></iconify-icon></button>
+            </div>
+            <div class="dash-chart-row dash-chart-row-2">
+              <!-- 环形图：各仓库存占比（分仓结存，与库存管理页同源），中心为总库存 -->
+              <div class="dash-chart-wrap">
+                <div class="dash-chart-box">
+                  <div class="dash-chart" id="dashWhChart"></div>
+                  <div class="dash-chart-center">
+                    <div class="dcc-v" id="dashWhTotal">0</div>
+                    <div class="dcc-s" id="dashWhTotalSub">在库结存</div>
+                  </div>
+                </div>
+                <div class="dash-chart-legend" id="dashWhLegend"></div>
+              </div>
+              <div class="dash-chart-side">
+                <div class="dash-kv" style="--dash-kv-c: var(--dash-c1);">
+                  <span class="dash-kv-k">在管仓库</span>
+                  <span class="dash-kv-v"><span id="dashWh">0</span><span class="dash-kv-s" id="dashRack">0 个货架</span></span>
+                </div>
+                <div class="dash-kv" style="--dash-kv-c: var(--dash-c2);">
+                  <span class="dash-kv-k">近 7 天入库</span>
+                  <span class="dash-kv-v up" id="dashIn">0</span>
+                </div>
+                <div class="dash-kv" style="--dash-kv-c: var(--dash-c5);">
+                  <span class="dash-kv-k">近 7 天出库</span>
+                  <span class="dash-kv-v down" id="dashOut">0</span>
+                </div>
+                <div class="dash-kv" style="--dash-kv-c: var(--dash-c4);">
+                  <span class="dash-kv-k">库存预警</span>
+                  <span class="dash-kv-v"><span id="dashAlert">0</span><span class="dash-kv-s">条待处理</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ③ 滞销与消耗：取自「滞销库存分析」同源数据 -->
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:clock-circle-outlined" width="18" height="18"></iconify-icon>
+              滞销与消耗
+              <span class="card-hint" id="dashSlowHint">— 结合礼品消耗数据给出处理建议</span>
+              <button type="button" class="btn btn-outline btn-sm" data-go="wh-stock" style="margin-left:auto;">查看分析<iconify-icon icon="ant-design:arrow-right-outlined" width="13" height="13"></iconify-icon></button>
+            </div>
+            <div class="dash-chart-row dash-chart-row-3">
+              <!-- 饼图：滞销占用构成（TOP 5 + 其他），图例颜色与切片一一对应 -->
+              <div class="dash-chart-wrap">
+                <div class="dash-chart-box">
+                  <div class="dash-chart" id="dashSlowChart"></div>
+                </div>
+                <div class="dash-chart-legend" id="dashSlowLegend"></div>
+              </div>
+              <!-- 高占用滞销 TOP 5：紧邻饼图右侧，条目超出时列表内部上下滚动 -->
+              <div class="dash-top-col">
+                <div class="dash-split-k">高占用滞销 TOP 5</div>
+                <div id="dashTopSlow" class="dash-top-list dash-top-scroll"></div>
+              </div>
+              <div class="dash-chart-side">
+                <div class="dash-kv" style="--dash-kv-c: var(--dash-c4);">
+                  <span class="dash-kv-k">滞销礼品</span>
+                  <span class="dash-kv-v"><span id="dashSlowCount">0</span><span class="dash-kv-s" id="dashSlowValue">占用 ¥0</span></span>
+                </div>
+                <div class="dash-kv" style="--dash-kv-c: var(--dash-c3);">
+                  <span class="dash-kv-k">在析礼品 SKU</span>
+                  <span class="dash-kv-v"><span id="dashGiftSku">0</span><span class="dash-kv-s">来自礼品消耗分析</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+        <!-- 页面2：盘点作业（导入库存 + 扫码盘点 合并） -->
+        <section class="page-section" id="page-import">
+          <!-- 数据导入（原「导入与扫码」页的导入区，独立成页） -->
+          <div class="card" id="workImportCard">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:import-outlined" width="18" height="18"></iconify-icon>
+              导入账面库存
+            </div>
+            <div class="upload-area" id="uploadArea">
+              <input type="file" id="excelFile" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" />
+              <svg class="illus" width="136" height="98" viewBox="0 0 136 98" role="img" aria-label="导入库存文件">
+                <rect class="il-f" x="34" y="12" width="48" height="62" rx="7"/>
+                <rect class="il-a" x="34" y="12" width="48" height="62" rx="7"/>
+                <path class="il-b" d="M45 28h26M45 39h26M45 50h15"/>
+                <circle class="il-f" cx="96" cy="72" r="17"/>
+                <circle class="il-a" cx="96" cy="72" r="17"/>
+                <path class="il-a" d="M96 81V62"/>
+                <path class="il-a" d="M89 69l7-7 7 7"/>
+              </svg>
+              <div>点击或拖拽文件到此处</div>
+              <div class="upload-hint">
+                支持 .xlsx / .xls / .csv 格式<br>
+                需包含「商品编号」和「库存数量」列，可选「商品名称」「条形码」「商品分类」
+              </div>
+            </div>
+            <div class="toolbar toolbar-split">
+              <div class="toolbar-group">
+                <button type="button" class="btn btn-outline btn-sm" id="btnExport"><iconify-icon icon="ant-design:export-outlined" width="14" height="14"></iconify-icon>导出结果</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btnTemplate"><iconify-icon icon="ant-design:download-outlined" width="14" height="14"></iconify-icon>下载导入模板</button>
+              </div>
+              <!-- 清空数据：无数据时隐藏，但始终与上方按钮同一行 -->
+              <div class="toolbar-group" id="importToolbar" style="display:none;">
+                <button type="button" class="btn btn-outline btn-sm" id="btnClear"><iconify-icon icon="ant-design:delete-outlined" width="14" height="14"></iconify-icon>清空数据</button>
+              </div>
+            </div>
+            <details class="fold-note">
+              <summary><iconify-icon icon="ant-design:bulb-outlined" width="13" height="13"></iconify-icon>导入说明</summary>
+              <div class="fold-body">重复的商品编号会自动去重，编号为空的整行会被跳过，导入后会给出提示汇总。模板中「账面库存」为盘点前的系统数量，导入后会自动保存一份到「盘点数据」页作为比对基线。</div>
+            </details>
+          </div>
+        </section>
+
+        <!-- 页面：扫码盘点（扫码区独立成页，USB 与摄像头改为上下排列） -->
+        <section class="page-section" id="page-scan">
+          <div class="page-head">
+            <h2 class="page-head-title">扫码录入实盘数量</h2>
+            <p class="page-head-sub">两种扫码方式任选其一，接入一种后另一种自动锁定，避免重复计数。</p>
+          </div>
+          <div class="scan-grid desktop-scan-only" id="workScanBlock">
+
+            <!-- 区域1：USB扫码枪接入 -->
+            <div class="card scan-card-usb">
+              <div class="card-title">
+                <iconify-icon icon="ant-design:scan-outlined" width="18" height="18"></iconify-icon>
+                USB扫码枪接入
+              </div>
+              <div class="scan-session">
+                <div class="ss-item is-ok">
+                  <iconify-icon class="ss-ico" icon="ant-design:scan-outlined" width="15" height="15"></iconify-icon>
+                  <div class="ss-v" id="ssScanned">0</div>
+                  <div class="ss-k">已扫商品</div>
+                </div>
+                <div class="ss-item is-warn">
+                  <iconify-icon class="ss-ico" icon="ant-design:arrow-up-outlined" width="15" height="15"></iconify-icon>
+                  <div class="ss-v" id="ssSurplus">0</div>
+                  <div class="ss-k">盘盈</div>
+                </div>
+                <div class="ss-item is-danger">
+                  <iconify-icon class="ss-ico" icon="ant-design:arrow-down-outlined" width="15" height="15"></iconify-icon>
+                  <div class="ss-v" id="ssDeficit">0</div>
+                  <div class="ss-k">盘亏</div>
+                </div>
+              </div>
+              <div class="scan-row">
+                <div class="device-inline" id="deviceStatusBar">
+                  <div class="device-status" id="deviceStatus">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span class="status-text" id="statusText">等待扫码设备接入</span>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-sm" id="btnConnectUsb">
+                    <iconify-icon icon="ant-design:link-outlined" width="14" height="14"></iconify-icon>连接USB设备
+                  </button>
+                </div>
+                <div class="scan-input-group">
+                  <iconify-icon class="scan-input-icon" icon="ant-design:scan-outlined" width="18" height="18"></iconify-icon>
+                  <input type="text" class="scan-input" id="scanInputDesktop"
+                         placeholder="扫码枪对准此处，自动识别无需回车"
+                         autocomplete="off" enterkeyhint="done" />
+                </div>
+              </div>
+              <div class="last-scan" id="lastScan"></div>
+              <div class="pending-barcode-hint" id="pendingBarcodeHint"></div>
+              <details class="fold-note">
+                <summary><iconify-icon icon="ant-design:question-circle-outlined" width="13" height="13"></iconify-icon>扫码枪使用说明</summary>
+                <div class="fold-body">
+                  <div class="tip-item">USB扫码枪即插即用，接入后状态灯变亮即表示就绪</div>
+                  <div class="tip-item">支持「商品编号」与「条形码」，每扫一次数量 +1</div>
+                  <div class="tip-item">也可手动输入编号后按回车确认</div>
+                </div>
+              </details>
+            </div>
+
+            <!-- 区域2：摄像头扫码 -->
+            <div class="card scan-card-camera">
+              <div class="card-title">
+                <iconify-icon icon="ant-design:camera-outlined" width="18" height="18"></iconify-icon>
+                摄像头扫码
+              </div>
+              <div class="camera-actions">
+                <button type="button" class="btn btn-primary" id="btnCamera">
+                  <iconify-icon icon="ant-design:camera-outlined" width="16" height="16"></iconify-icon>
+                  <span class="btn-camera-text">开启摄像头扫码</span>
+                </button>
+              </div>
+              <div class="camera-placeholder" id="cameraPlaceholder">
+                <svg class="illus" width="128" height="92" viewBox="0 0 128 92" role="img" aria-label="摄像头取景扫码">
+                  <path class="il-a" d="M40 22h-8a6 6 0 0 0-6 6v8"/>
+                  <path class="il-a" d="M88 22h8a6 6 0 0 1 6 6v8"/>
+                  <path class="il-a" d="M40 70h-8a6 6 0 0 1-6-6v-8"/>
+                  <path class="il-a" d="M88 70h8a6 6 0 0 0 6-6v-8"/>
+                  <path class="il-t" d="M50 34v24M64 34v24M76 34v24"/>
+                  <path class="il-b" d="M45 34v24M56 34v24M60 34v24M70 34v24M82 34v24"/>
+                </svg>
+                <p>点击上方按钮开启摄像头<br>将条码对准取景框即可自动识别</p>
+              </div>
+              <div id="reader"></div>
+              <details class="fold-note">
+                <summary><iconify-icon icon="ant-design:question-circle-outlined" width="13" height="13"></iconify-icon>摄像头扫码说明</summary>
+                <div class="fold-body">
+                  <div class="tip-item">需授权浏览器使用摄像头权限</div>
+                  <div class="tip-item">推荐在光线充足环境下使用</div>
+                  <div class="tip-item">本地文件方式打开可能无法使用摄像头</div>
+                </div>
+              </details>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 页面3：盘点明细 -->
+        <section class="page-section" id="page-detail">
+          <div class="card detail-card">
+            <div class="card-title">盘点明细</div>
+            <div class="search-bar">
+              <iconify-icon class="search-ico" icon="ant-design:search-outlined" width="16" height="16"></iconify-icon>
+              <input type="text" class="search-input" id="searchInput"
+                     placeholder="搜索商品编号 / 条形码 / 商品名称"
+                     autocomplete="off" />
+              <button type="button" class="btn btn-primary btn-sm btn-search" id="btnSearch"><iconify-icon icon="ant-design:search-outlined" width="14" height="14"></iconify-icon>搜索</button>
+            </div>
+            <div class="detail-toolbar" id="detailToolbar" style="display:none;">
+              <div class="detail-toolbar-info">
+                <button type="button" class="tooltip" data-tip="扫码修改后，点右侧「保存为盘点报告」可把本次结果存入「盘点数据」页，之后即可与盘点前账面做比对。" aria-label="查看保存说明"></button>
+                <span>共 <b id="detailCount">0</b> 条 · 扫码修改后记得保存报告</span>
+              </div>
+              <div class="detail-toolbar-actions">
+                <button type="button" class="btn btn-outline btn-sm" id="btnClearDetail"><iconify-icon icon="ant-design:delete-outlined" width="14" height="14"></iconify-icon>清空数据</button>
+                <button type="button" class="btn btn-outline btn-sm" id="btnExportDetail"><iconify-icon icon="ant-design:export-outlined" width="14" height="14"></iconify-icon>导出当前</button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSaveSnapshot"><iconify-icon icon="ant-design:save-outlined" width="14" height="14"></iconify-icon>保存为盘点报告</button>
+              </div>
+            </div>
+            <div class="filter-bar">
+              <button type="button" class="btn btn-outline btn-sm active" data-filter="all"><iconify-icon icon="ant-design:appstore-outlined" width="14" height="14"></iconify-icon>全部</button>
+              <button type="button" class="btn btn-outline btn-sm" data-filter="surplus"><iconify-icon icon="ant-design:arrow-up-outlined" width="14" height="14"></iconify-icon>盘盈</button>
+              <button type="button" class="btn btn-outline btn-sm" data-filter="deficit"><iconify-icon icon="ant-design:arrow-down-outlined" width="14" height="14"></iconify-icon>盘亏</button>
+              <button type="button" class="btn btn-outline btn-sm" data-filter="balanced"><iconify-icon icon="ant-design:check-circle-outlined" width="14" height="14"></iconify-icon>对平</button>
+              <button type="button" class="btn btn-outline btn-sm" data-filter="scanned"><iconify-icon icon="ant-design:scan-outlined" width="14" height="14"></iconify-icon>已扫</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>商品编号</th>
+                    <th>条形码</th>
+                    <th>商品名称</th>
+                    <th>库存</th>
+                    <th>盘点</th>
+                    <th>差异</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <tr><td colspan="8" class="empty">请先上传 Excel 账面库存</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pager" id="pager" style="display:none;">
+              <div class="pager-left">
+                <span class="pager-info" id="pagerInfo">-</span>
+                <span>每页</span>
+                <span class="bubble" id="pageSizeSelect"></span>
+                <span>条</span>
+              </div>
+              <div class="pager-right">
+                <div class="pager-btns">
+                  <button type="button" class="btn btn-outline btn-sm" id="btnPrev"><iconify-icon icon="ant-design:arrow-left-outlined" width="14" height="14"></iconify-icon>上一页</button>
+                  <span id="pageNum">1</span>
+                  <button type="button" class="btn btn-outline btn-sm" id="btnNext">下一页<iconify-icon icon="ant-design:arrow-right-outlined" width="14" height="14"></iconify-icon></button>
+                </div>
+                <span>跳至</span>
+                <input type="number" class="pager-jump-input" id="pageJumpInput" min="1" value="1" />
+                <span>页</span>
+                <button type="button" class="btn btn-outline btn-sm" id="btnJump">确定</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 页面5：盘点数据（三个板块各自独立成页，由顶部全局导航切换） -->
+        <section class="page-section" id="page-scan-data">
+
+          <!-- 子页导航：参考库存管理 Tab 布局，三个子页平铺切换 -->
+          <nav class="sub-tabs" id="globalNav" role="tablist" aria-label="盘点数据分区导航">
+            <button type="button" class="sub-tab active" role="tab" aria-selected="true" data-stab="pre" data-view="pre">盘点前账面库存</button>
+            <button type="button" class="sub-tab" role="tab" aria-selected="false" data-stab="reports" data-view="reports">已保存盘点报告</button>
+            <button type="button" class="sub-tab" role="tab" aria-selected="false" data-stab="compare" data-view="compare">账面比对</button>
+          </nav>
+
+          <!-- 子页 1/3：盘点前账面库存 -->
+          <div class="tab-panel scan-view active" id="scanViewPre" data-stab-panel="pre">
+          <!-- 第一段：盘点前账面数据（导入 Excel 时自动生成，可导出） -->
+          <div class="card gn-anchor" id="gn-pre">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:file-text-outlined" width="18" height="18"></iconify-icon>
+              盘点前账面库存
+              <span class="card-hint" id="preScanSummary">— 共 0 条</span>
+              <button type="button" class="tooltip" data-tip="这是导入时的原始账面数据。Excel 导入后会自动保存一份到这里，无论后续如何扫码修改都不会覆盖；可作为「盘点前」基线随时导出。" aria-label="查看账面数据说明"></button>
+            </div>
+            <div class="toolbar" style="margin-top:0;">
+              <button type="button" class="btn btn-primary" id="btnExportPreScan">
+                <iconify-icon icon="ant-design:export-outlined" width="14" height="14"></iconify-icon>
+                导出账面
+              </button>
+              <button type="button" class="btn btn-outline" id="btnClearPreScan">
+                <iconify-icon icon="ant-design:delete-outlined" width="14" height="14"></iconify-icon>
+                清空账面
+              </button>
+            </div>
+            <div class="search-bar scan-search-bar">
+              <iconify-icon class="search-ico" icon="ant-design:search-outlined" width="16" height="16"></iconify-icon>
+              <input type="text" class="search-input" id="preScanSearch"
+                     placeholder="搜索商品编号 / 条形码 / 商品名称 / 分类"
+                     autocomplete="off" />
+              <button type="button" class="btn btn-primary btn-sm btn-search" id="btnPreScanSearch"><iconify-icon icon="ant-design:search-outlined" width="14" height="14"></iconify-icon>搜索</button>
+            </div>
+            <div class="table-wrap table-sticky" style="margin-top:14px;">
+              <table class="data-table" id="preScanTable">
+                <thead>
+                  <tr>
+                    <th>商品编号</th>
+                    <th>条形码</th>
+                    <th>商品名称</th>
+                    <th>分类</th>
+                    <th class="num">账面库存</th>
+                  </tr>
+                </thead>
+                <tbody id="preScanBody"></tbody>
+              </table>
+            </div>
+            <div id="preScanPager" class="pager-pinned"></div>
+          </div>
+          </div>
+
+          <!-- 子页 2/3：已保存的盘点记录（在盘点明细页「保存为盘点报告」生成） -->
+          <div class="tab-panel scan-view" id="scanViewReports" data-stab-panel="reports">
+            <div class="card gn-anchor" id="gn-reports">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:database-outlined" width="18" height="18"></iconify-icon>
+              已保存盘点报告
+              <span class="card-hint" id="snapshotsSummary">— 共 0 份</span>
+              <button type="button" class="tooltip" data-tip="这里显示你在「盘点明细」页通过「保存为盘点报告」按钮提交的每一份盘点结果。每份报告可查看详情（带分页）、导出 Excel、删除；点「比对」会将该报告与上方「盘点前账面」逐条比对。" aria-label="查看盘点报告说明"></button>
+            </div>
+            <div class="toolbar" style="margin-top:0;">
+              <button type="button" class="btn btn-ghost" id="btnClearSnapshots">
+                <iconify-icon icon="ant-design:delete-outlined" width="14" height="14"></iconify-icon>
+                清空全部报告
+              </button>
+            </div>
+            <div class="compare-stats report-stats" id="reportStats"></div>
+            <div id="snapshotsList" style="margin-top:14px;"></div>
+          </div>
+          </div>
+
+          <!-- 子页 3/3：账面比对（盘点前账面 vs 盘点后实盘） -->
+          <div class="tab-panel scan-view" id="scanViewCompare" data-stab-panel="compare">
+            <div class="card gn-anchor" id="compareCard">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:swap-outlined" width="18" height="18"></iconify-icon>
+              账面比对
+              <span class="card-hint">盘点前账面 vs 盘点后实盘</span>
+              <button type="button" class="tooltip tip-right" data-tip="选择一份盘点报告（或当前未保存数据），系统按商品编号逐条比对「盘点前账面库存」与「实盘数量」，自动给出比对结论：对平（账面 = 实盘）、盘盈（实盘 > 账面）、盘亏（实盘 < 账面）、未盘点（账面有、报告无）、账面缺失（报告有、账面无）。" aria-label="查看比对规则说明"></button>
+            </div>
+            <div class="toolbar compare-bar" style="margin-top:14px;">
+              <span class="bar-label">选择盘点数据</span>
+              <span class="bubble-fill" id="compareSelect" aria-label="选择要对比的盘点报告"></span>
+              <button type="button" class="btn btn-primary" id="btnCompareRun">
+                <iconify-icon icon="ant-design:swap-outlined" width="14" height="14"></iconify-icon>
+                开始比对
+              </button>
+              <button type="button" class="btn btn-outline" id="btnExportCompare" style="display:none;">
+                <iconify-icon icon="ant-design:export-outlined" width="14" height="14"></iconify-icon>
+                导出比对结果
+              </button>
+            </div>
+            <div id="compareEmpty" class="compare-empty">
+              <svg class="illus" width="132" height="96" viewBox="0 0 132 96" role="img" aria-label="尚未生成比对结果">
+                <path class="il-a" d="M26 66h34M72 66h34"/>
+                <path class="il-a" d="M40 40h20M72 52h20"/>
+                <path class="il-f" d="M30 28h26v38H30zM76 28h26v38H76z"/>
+                <path class="il-a" d="M30 28h26v38H30zM76 28h26v38H76z"/>
+              </svg>
+              <p class="compare-empty-title">尚未生成比对结果</p>
+              <p class="compare-empty-sub">在上方选择一份盘点数据后点「开始比对」，系统会按商品编号逐条比对盘点前账面与实盘数量。</p>
+            </div>
+            <div id="compareResult" style="display:none;">
+              <div class="compare-stats" id="compareStats"></div>
+              <div class="filter-bar filter-bar-row" id="compareFilters">
+                <div class="search-bar scan-search-bar">
+                  <iconify-icon class="search-ico" icon="ant-design:search-outlined" width="16" height="16"></iconify-icon>
+                  <input type="text" class="search-input" id="compareSearch"
+                         placeholder="搜索编号 / 条形码 / 名称"
+                         autocomplete="off" />
+                  <button type="button" class="btn btn-primary btn-sm btn-search" id="btnCompareSearch"><iconify-icon icon="ant-design:search-outlined" width="14" height="14"></iconify-icon>搜索</button>
+                </div>
+                <span class="filter-divider" aria-hidden="true"></span>
+                <button type="button" class="btn btn-outline btn-sm active" data-cfilter="all"><iconify-icon icon="ant-design:appstore-outlined" width="14" height="14"></iconify-icon>全部</button>
+                <button type="button" class="btn btn-outline btn-sm" data-cfilter="diff"><iconify-icon icon="ant-design:area-chart-outlined" width="14" height="14"></iconify-icon>仅差异</button>
+                <button type="button" class="btn btn-outline btn-sm" data-cfilter="balanced"><iconify-icon icon="ant-design:check-circle-outlined" width="14" height="14"></iconify-icon>对平</button>
+                <button type="button" class="btn btn-outline btn-sm" data-cfilter="surplus"><iconify-icon icon="ant-design:arrow-up-outlined" width="14" height="14"></iconify-icon>盘盈</button>
+                <button type="button" class="btn btn-outline btn-sm" data-cfilter="deficit"><iconify-icon icon="ant-design:arrow-down-outlined" width="14" height="14"></iconify-icon>盘亏</button>
+                <button type="button" class="btn btn-outline btn-sm" data-cfilter="no-count"><iconify-icon icon="ant-design:unordered-list-outlined" width="14" height="14"></iconify-icon>未盘点</button>
+                <button type="button" class="btn btn-outline btn-sm" data-cfilter="no-book"><iconify-icon icon="ant-design:file-text-outlined" width="14" height="14"></iconify-icon>账面缺失</button>
+              </div>
+              <div class="table-wrap table-sticky">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>商品编号</th>
+                      <th>条形码</th>
+                      <th>商品名称</th>
+                      <th class="num">账面库存</th>
+                      <th class="num">实盘数量</th>
+                      <th class="num">差异</th>
+                      <th>比对结果</th>
+                    </tr>
+                  </thead>
+                  <tbody id="compareBody"></tbody>
+                </table>
+              </div>
+              <div id="comparePager" class="pager-pinned"></div>
+            </div>
+          </div>
+          </div>
+
+        </section>
+
+        <!-- 页面：仓库可视化（3D 交互园区） -->
+        <section class="page-section" id="page-wh-park">
+          <div class="park-toolbar">
+            <div class="park-wh-switch" id="parkWhSwitch" role="tablist" aria-label="仓库切换"></div>
+            <div class="park-toolbar-right">
+              <div class="park-legend" id="parkLegend"></div>
+              <div class="park-viewctl">
+                <!-- 精简工具栏：环绕 / 旋转·平移 / 全园 / 俯视 / 面板 / 设置，避免功能重复按钮 -->
+                <button type="button" class="btn btn-outline btn-sm" id="parkBtnRotate" aria-pressed="true" title="自动环绕（类地图漫游）"><iconify-icon icon="ant-design:sync-outlined" width="14" height="14"></iconify-icon>环绕</button>
+                <button type="button" class="btn btn-outline btn-sm" id="parkBtnMode" aria-pressed="false" title="拖动模式：旋转视角 / 平移园区（滚轮缩放始终可用）"><iconify-icon icon="ant-design:drag-outlined" width="14" height="14"></iconify-icon><span id="parkBtnModeTxt">旋转</span></button>
+                <button type="button" class="btn btn-outline btn-sm" id="parkBtnFit" title="一键框住整个园区"><iconify-icon icon="ant-design:fullscreen-outlined" width="14" height="14"></iconify-icon>全园</button>
+                <button type="button" class="btn btn-outline btn-sm" id="parkBtnTop" title="垂直俯视（可再点全园恢复斜视）"><iconify-icon icon="ant-design:layout-outlined" width="14" height="14"></iconify-icon>俯视</button>
+                <button type="button" class="btn btn-outline btn-sm" id="parkBtnPanel" aria-pressed="false" title="折叠/展开右侧详情面板"><iconify-icon icon="ant-design:vertical-right-outlined" width="14" height="14"></iconify-icon><span id="parkBtnPanelTxt">收起面板</span></button>
+                <button type="button" class="btn btn-outline btn-sm" id="parkBtnConfig" title="新增 / 编辑 / 删除仓库与货架分区"><iconify-icon icon="ant-design:setting-outlined" width="14" height="14"></iconify-icon>仓库设置</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="park-stage-wrap" id="parkStageWrap">
+            <div class="park-stage" id="parkStage">
+              <div class="park-scene" id="parkScene"></div>
+              <!-- 3D 标签层：与 park-scene 同级的屏幕空间覆盖层。
+                   文字不能放进 3D 变换链（会被 rotateX 压扁、中文竖排不可见），
+                   这里由 projectLabels() 按 3D 坐标投影成像素位置后定位。 -->
+              <div class="park-label-layer" id="parkLabelLayer" aria-hidden="true"></div>
+              <div class="park-hud">
+                <div class="park-hud-item"><span class="park-hud-k">仓库</span><span class="park-hud-v" id="parkHudWh">—</span></div>
+                <div class="park-hud-item"><span class="park-hud-k">货架</span><span class="park-hud-v" id="parkHudRack">—</span></div>
+                <div class="park-hud-item"><span class="park-hud-k">品类</span><span class="park-hud-v" id="parkHudCat">—</span></div>
+                <div class="park-hud-hint"><iconify-icon icon="ant-design:info-circle-outlined" width="13" height="13"></iconify-icon><span id="parkHudHint">拖动旋转 · 滚轮缩放 · 点层看库存 / 点货架看整架</span></div>
+              </div>
+              <!-- 层选中浮层：点击货架层后即时展示商品名称与库存（类地图建筑气泡） -->
+              <div class="park-float" id="parkFloat" hidden aria-live="polite"></div>
+              <!-- 滑离园区时的回归提示：一条常驻操作条，明确告知各键位与一键回全园 -->
+              <div class="park-navhint" id="parkNavHint">
+                <span class="park-navhint-txt">
+                  <iconify-icon icon="ant-design:compass-outlined" width="14" height="14"></iconify-icon>
+                  <span id="parkNavHintTxt">切到「平移」后按住拖动可四向查看，滚轮缩放</span>
+                </span>
+                <button type="button" class="btn btn-primary btn-sm" id="parkBtnFit2">
+                  <iconify-icon icon="ant-design:fullscreen-outlined" width="13" height="13"></iconify-icon>回到全园
+                </button>
+              </div>
+            </div>
+            <aside class="park-panel" id="parkPanel" aria-label="货架详情">
+              <div class="park-panel-empty">
+                <svg class="illus" width="132" height="96" viewBox="0 0 132 96" role="img" aria-label="未选择货架">
+                  <rect class="il-f" x="28" y="20" width="76" height="56" rx="6"/>
+                  <rect class="il-a" x="28" y="20" width="76" height="56" rx="6"/>
+                  <path class="il-b" d="M40 38h52M40 52h52M40 66h34"/>
+                </svg>
+                <p class="park-panel-title">未选择货架</p>
+                <p class="park-panel-sub">在左侧园区中点击任意货架或货架层，查看对应货物、礼品与出入库流水。</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- 页面：库存管理 -->
+        <section class="page-section" id="page-wh-stock">
+          <div class="stock-kpis" id="stockKpis"></div>
+
+          <!-- 子页导航：置于 KPI 下方、内容区上方，一屏只呈现一件事 -->
+          <nav class="sub-tabs" id="stockTabs" role="tablist" aria-label="库存管理分区">
+            <button type="button" class="sub-tab active" role="tab" aria-selected="true" data-stab="import">数据导入</button>
+            <button type="button" class="sub-tab" role="tab" aria-selected="false" data-stab="flow">出入库动态<span class="sub-tab-badge" id="tabFlowBadge">0</span></button>
+            <button type="button" class="sub-tab" role="tab" aria-selected="false" data-stab="alert">库存预警<span class="sub-tab-badge warn" id="tabAlertBadge">0</span></button>
+            <button type="button" class="sub-tab" role="tab" aria-selected="false" data-stab="consume">礼品消耗分析</button>
+            <button type="button" class="sub-tab" role="tab" aria-selected="false" data-stab="slow">滞销库存分析</button>
+          </nav>
+
+          <div class="tab-panel active" data-stab-panel="import">
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:cloud-upload-outlined" width="18" height="18"></iconify-icon>
+              库存数据导入
+              <span class="card-hint" id="stockImportHint">— 支持历史 / 当前两种模式，单次 50000+ 条</span>
+            </div>
+            <div class="stock-import-grid">
+              <div class="stock-import-side">
+                <div class="stock-import-mode-label">数据模式</div>
+                <div class="stock-import-mode" id="stockImportMode">
+                  <label class="stock-import-opt">
+                    <input type="radio" name="stockImportMode" value="history" checked>
+                    <span class="stock-import-opt-body">
+                      <span class="stock-import-opt-t">历史数据</span>
+                      <span class="stock-import-opt-d">过去一段时间的消耗 / 出入库记录，用于滞销分析与趋势对比</span>
+                    </span>
+                  </label>
+                  <label class="stock-import-opt">
+                    <input type="radio" name="stockImportMode" value="current">
+                    <span class="stock-import-opt-body">
+                      <span class="stock-import-opt-t">当前数据</span>
+                      <span class="stock-import-opt-d">最新库存快照，覆盖当前周期消耗统计</span>
+                    </span>
+                  </label>
+                </div>
+                <div class="upload-area stock-upload" id="stockUploadArea">
+                  <input type="file" id="stockExcelFile" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" />
+                  <svg class="illus" width="120" height="86" viewBox="0 0 120 86" role="img" aria-label="导入库存数据文件">
+                    <path d="M20 14 h56 l24 24 v40 a4 4 0 0 1 -4 4 h-76 a4 4 0 0 1 -4 -4 v-60 a4 4 0 0 1 4 -4z" fill="#f5f5f5" stroke="#d4d4d4" stroke-width="1.5"/>
+                    <path d="M76 14 v20 a4 4 0 0 0 4 4 h20" fill="none" stroke="#a3a3a3" stroke-width="1.5"/>
+                    <circle cx="60" cy="60" r="20" fill="none" stroke="#171717" stroke-width="2.2"/>
+                    <path d="M60 50 v20 M50 60 h20" stroke="#171717" stroke-width="2.4" stroke-linecap="round"/>
+                  </svg>
+                  <div>点击或拖拽文件到此处</div>
+                  <div class="upload-hint">支持 .xlsx / .xls / .csv，单次最多 50000+ 条<br>标准表头：仓库 / 商品名称 / <strong>商品编码</strong> / 商品分类 / 单位 / 原数量 / <strong>变更数量</strong> / 变更后数量 / 变更金额 / 变更含税金额 / 变更类型 / 摘要 / 单号 / 备注 / <strong>变更时间</strong> / 账期 / 供应商 / 操作人 / 操作终端</div>
+                </div>
+                <div class="stock-import-progress" id="stockImportProgress" hidden>
+                  <div class="stock-import-progress-bar"><span id="stockImportBarFill" style="width:0%"></span></div>
+                  <div class="stock-import-progress-text"><span id="stockImportBarText">解析中...</span></div>
+                </div>
+              </div>
+              <div class="stock-import-info">
+                <div class="card-sub-title">已导入数据概览</div>
+                <div id="stockImportOverview" class="stock-import-overview">
+                  <div class="alert-empty">尚未导入数据，消耗分析将使用系统内置近 7 天流水</div>
+                </div>
+                <div class="card-sub-title" style="margin-top:18px;">字段说明（对齐「库存变更查询」导出表）</div>
+                <div class="stock-import-fields">
+                  <div><strong>商品编码</strong>：礼品唯一编码，必填（兼容「SKU/编号」）</div>
+                  <div><strong>商品名称</strong>：礼品名称，选填</div>
+                  <div><strong>变更数量</strong>：变动数量，必填。<strong style="color:var(--primary)">负数 = 出库（计消耗），正数 = 入库</strong></div>
+                  <div><strong>仓库</strong>：来源仓库，选填，用于按仓库维度归集</div>
+                  <div><strong>商品分类</strong>：礼品分类，选填，用于品类分析</div>
+                  <div><strong>变更时间</strong>：记录时间，选填（YYYY-MM-DD HH:mm:ss）</div>
+                  <div><strong>变更类型</strong>：领用 / 兑换 / 采购入库 / 退货 等，选填</div>
+                  <div><strong>单号 / 操作人</strong>：单据编号与经办人，选填</div>
+                </div>
+                <div class="card-sub-title" style="margin-top:18px;">操作</div>
+                <div class="stock-import-actions">
+                  <button type="button" class="btn btn-ghost btn-sm" id="stockImportTemplate">下载标准模板（.xlsx）</button>
+                  <button type="button" class="btn btn-outline btn-sm" id="stockImportClear">清空已导入数据</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <div class="tab-panel" data-stab-panel="flow">
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:swap-outlined" width="18" height="18"></iconify-icon>
+              出入库动态
+              <span class="card-hint" id="stockFlowHint">— 近 7 天</span>
+            </div>
+            <div class="filter-bar filter-bar-row" id="stockFlowFilters">
+              <div class="search-bar scan-search-bar">
+                <iconify-icon class="search-ico" icon="ant-design:search-outlined" width="16" height="16"></iconify-icon>
+                <input type="text" class="search-input" id="stockFlowSearch" placeholder="搜索单号 / 货物 / 人员" autocomplete="off" />
+              </div>
+              <span class="filter-divider" aria-hidden="true"></span>
+              <button type="button" class="btn btn-outline btn-sm active" data-sflow="all">全部</button>
+              <button type="button" class="btn btn-outline btn-sm" data-sflow="in">入库</button>
+              <button type="button" class="btn btn-outline btn-sm" data-sflow="out">出库</button>
+            </div>
+            <!-- 变更类型多选筛选：数据来自导入的库存变更表「变更类型」列，带各类型计数 -->
+            <div class="flow-kind" id="flowKindFilter"></div>
+            <div class="table-wrap table-sticky">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>单号</th><th>方向</th><th>变更类型</th><th>仓库 / 货架</th><th>货物</th>
+                    <th class="num">数量</th><th>经办人</th><th>时间</th>
+                  </tr>
+                </thead>
+                <tbody id="stockFlowBody"></tbody>
+              </table>
+            </div>
+            <div id="stockFlowPager" class="pager-pinned"></div>
+          </div>
+          </div>
+
+          <div class="tab-panel" data-stab-panel="alert">
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:alert-outlined" width="18" height="18"></iconify-icon>
+              库存预警配置
+              <span class="card-hint" id="stockAlertHint">—</span>
+            </div>
+            <div class="alert-config" id="stockAlertConfig"></div>
+            <div class="card-sub-title">当前触发预警</div>
+            <div id="stockAlertList"></div>
+          </div>
+          </div>
+
+          <div class="tab-panel" data-stab-panel="consume">
+            <div class="card">
+              <div class="card-title">
+                <iconify-icon icon="ant-design:pie-chart-outlined" width="18" height="18"></iconify-icon>
+                礼品消耗分析
+                <button type="button" class="tooltip" data-tip="按近 30 天出库数量对礼品分层：高于均值 1.5 倍为高消耗，低于均值 0.5 倍为低消耗。用于判断哪些礼品需要补货、哪些可以减少备货。" aria-label="查看消耗分析说明"></button>
+              </div>
+              <div id="stockConsumeChart" class="consume-chart"></div>
+              <div class="consume-split">
+                <div class="consume-col">
+                  <div class="card-sub-title"><span class="dot dot-up"></span>高消耗礼品</div>
+                  <div id="stockHighList" class="stock-mini-list"></div>
+                </div>
+                <div class="consume-col">
+                  <div class="card-sub-title"><span class="dot dot-down"></span>低消耗礼品</div>
+                  <div id="stockLowList" class="stock-mini-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" data-stab-panel="slow">
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:clock-circle-outlined" width="18" height="18"></iconify-icon>
+              礼品滞销库存分析
+              <span class="card-hint" id="stockSlowHint">—</span>
+              <button type="button" class="tooltip" data-tip="滞销判定：当前仍有库存，但最近一次出库距今超过阈值天数（默认 30 天），或库存金额占用高而动销极低。按占用金额降序排列，建议优先处理。" aria-label="查看滞销分析说明"></button>
+            </div>
+            <div class="filter-bar" id="stockSlowFilters">
+              <button type="button" class="btn btn-outline btn-sm active" data-slow="all">全部</button>
+              <button type="button" class="btn btn-outline btn-sm" data-slow="stale">超期未动</button>
+              <button type="button" class="btn btn-outline btn-sm" data-slow="high">高占用</button>
+            </div>
+            <div class="table-wrap table-sticky">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>礼品</th><th>品类</th><th>所在仓库 / 货架</th>
+                    <th class="num">现存库存</th><th class="num">占用金额</th><th class="num">最近出库</th><th>状态</th><th>处理建议</th>
+                  </tr>
+                </thead>
+                <tbody id="stockSlowBody"></tbody>
+              </table>
+            </div>
+            <div id="stockSlowPager" class="pager-pinned"></div>
+          </div>
+          </div>
+
+          <!-- 数据导入：支持 50000+ 条分批解析，历史/当前两种模式 -->
+        </section>
+
+        <!-- 页面6：系统说明 -->
+        <section class="page-section" id="page-help">
+          <div class="card">
+            <div class="card-title">
+              <iconify-icon icon="ant-design:bulb-outlined" width="18" height="18"></iconify-icon>
+              系统说明
+            </div>
+            <div class="help-prose">
+              <h3>这是什么</h3>
+              <p>这是一个面向仓储、门店、小型团队的<strong>轻量级盘点工具</strong>。从 Excel 导入账面库存，扫码或摄像头录入实盘数量，自动计算差异并导出报告。</p>
+
+              <h3>为什么做这个</h3>
+              <p>传统盘点要么人工抄写 Excel，要么部署一套动辄几万块的 WMS。我们见过太多老板最后用「纸 + 计算器」凑合，于是做了这个<strong>零部署、零成本、双击就能用</strong>的工具。</p>
+              <ul>
+                <li>缓解手动盘点带来的<strong>数据准确性</strong>问题（每扫一次自动 +1，扫码枪 / 摄像头双通道）</li>
+                <li>提升<strong>盘点效率</strong>（条码识别 ≤ 200ms，无须手动敲数量）</li>
+                <li>导出结果直接给财务、店长复核，<strong>无需额外学习</strong></li>
+              </ul>
+
+              <h3>推荐工作流</h3>
+              <ol>
+                <li><strong>数据看板</strong>：汇总盘点执行、仓库库存、滞销消耗的实时数据</li>
+                <li><strong>数据导入</strong>：上传账面库存 Excel　→　<strong>扫码盘点</strong>：扫码录入实盘</li>
+                <li><strong>盘点明细</strong>：逐条核对 / 修正实盘数量</li>
+                <li><strong>盘点数据</strong>：顶部导航把该模块拆成三个独立子页——盘点前账面库存 / 已保存盘点报告 / 账面比对，点报告的「比对」可直达比对子页并自动比对</li>
+              </ol>
+
+              <h3>数据与隐私</h3>
+              <p>所有数据保存在你的<strong>浏览器本地存储（localStorage）</strong>中，不上传任何服务器。清除浏览器数据会丢失记录，建议每次盘点结束后导出 Excel 留底。</p>
+
+              <h3>常见问题</h3>
+              <details>
+                <summary>摄像头扫码不工作？</summary>
+                <p>本工具使用浏览器原生 API，<code>file://</code> 协议下摄像头会被浏览器阻止。请用 Chrome / Edge 打开并通过 <code>http://</code> 访问（局域网或本机 Web 服务器均可）。</p>
+              </details>
+              <details>
+                <summary>Excel 格式要求？</summary>
+                <p>必须包含「商品编号」「库存数量」两列；可选「商品名称」「条形码」「商品分类」。可在「数据导入」页直接下载模板。</p>
+              </details>
+              <details>
+                <summary>扫到商品没有条形码？</summary>
+                <p>系统会提示你扫描条形码，扫完自动补录到该商品上，下次再扫同样条码即可直接命中。</p>
+              </details>
+              <details>
+                <summary>盘点后怎么和账面对比？</summary>
+                <p>到「盘点数据 → 账面比对」选择一份已保存的盘点报告（或当前未保存数据），点「开始比对」。系统会按商品编号逐条比对盘点前账面库存与实盘数量，给出对平 / 盘盈 / 盘亏 / 未盘点 / 账面缺失五种结论、数量总差异与盘点准确率，并支持一键导出 Excel 比对结果。</p>
+              </details>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- 移动端底部扫码栏 -->
+  <div class="bottom-bar">
+    <input type="text" class="scan-input" id="scanInputMobile"
+           placeholder="扫码自动识别，无需回车"
+           autocomplete="off" enterkeyhint="done" />
+    <button type="button" class="btn btn-primary btn-sm" id="btnCameraMobile">
+      <iconify-icon icon="ant-design:camera-outlined" width="14" height="14"></iconify-icon>
+      <span class="btn-camera-text">摄像头</span>
+    </button>
+  </div>
+
+  <div class="scan-popup" id="scanPopup">
+    <div class="sp-icon" id="spIcon">
+      <iconify-icon class="sp-icon-check" icon="ant-design:check-circle-outlined" width="22" height="22"></iconify-icon>
+      <iconify-icon class="sp-icon-plus" icon="ant-design:plus-circle-outlined" width="22" height="22"></iconify-icon>
+    </div>
+    <div class="sp-title" id="spTitle">添加成功</div>
+    <div class="sp-name" id="spName"></div>
+    <div class="sp-meta" id="spMeta"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- 自定义模态弹窗 -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-content" id="modalContent"></div>
+      <div class="modal-actions" id="modalActions">
+        <button class="btn btn-primary btn-sm" id="modalOk">确定</button>
+        <button class="btn btn-outline btn-sm" id="modalCancel">取消</button>
+      </div>
+    </div>
+  </div>

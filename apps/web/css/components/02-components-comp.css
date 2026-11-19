@@ -1,0 +1,53 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/02-components-comp.css — extracted from inventory-check.html */
+/* ===== 模块容器：去卡片化 =====
+       无边框 / 无圆角 / 无阴影 / 无底色，仅靠垂直间距与标题层级分层。
+       克制的企业级 B 端视觉：容器不抢内容，表格与数据才是主角。 */
+    .card {
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      margin-bottom: 44px;
+    }
+    .page-section .card:last-child { margin-bottom: 4px; }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.02em;
+      flex-wrap: wrap;
+      row-gap: 6px;
+    }
+    .card-hint {
+      /* 计数/说明文字紧跟标题，右侧留白交给容器；不再用 margin-left:auto 顶到最右 */
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--muted);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .help-prose { color: var(--text); line-height: 1.85; font-size: 14px; }
+    .help-prose h3 { font-size: 15px; font-weight: 700; margin: 26px 0 10px; color: var(--text); }
+    .help-prose p { margin: 0 0 12px; color: var(--text-secondary); }
+    .help-prose ul, .help-prose ol { margin: 0 0 12px 22px; color: var(--text-secondary); }
+    .help-prose li { margin-bottom: 6px; }
+    .help-prose code { background: #f5f5f5; padding: 1px 6px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 13px; }
+    .help-prose details { margin-bottom: 0; padding: 12px 0; border-top: 1px solid var(--border-light); }
+    .help-prose details:last-of-type { border-bottom: 1px solid var(--border-light); }
+    .help-prose summary { cursor: pointer; font-weight: 600; color: var(--text); }
+    .help-prose details[open] summary { margin-bottom: 8px; }
+    .table-wrap { overflow-x: auto; }
+    /* 扫码互斥：被禁用的卡片降低不透明度、不可点击 */
+    .scan-card-usb.locked, .scan-card-cam.locked { opacity: 0.45; pointer-events: none; }
+    .scan-card-usb .card-title.muted,
+    .scan-card-cam .card-title.muted { opacity: 0.6; }
+    .orig-cell { font-size: 11px; color: var(--muted); margin-top: 2px; }

@@ -1,0 +1,38 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/index.css — 样式入口：按依赖顺序汇总 */
+@import url("./00-tokens.css");
+@import url("./01-base.css");
+@import url("./components/02-components-comp.css");
+@import url("./pages/03-pages-report.css");
+@import url("./components/04-components-stat.css");
+@import url("./components/05-components-illus.css");
+@import url("./pages/06-pages-progress.css");
+@import url("./components/07-components-btn.css");
+@import url("./pages/08-pages-park.css");
+@import url("./pages/09-pages-stock.css");
+@import url("./components/10-components-tabs.css");
+@import url("./pages/11-pages-stockImport.css");
+@import url("./pages/12-pages-cfg.css");
+@import url("./pages/13-pages-machine.css");
+@import url("./components/13-components-upload.css");
+@import url("./components/14-components-fold.css");
+@import url("./components/15-components-bubble.css");
+@import url("./components/16-components-tip.css");
+@import url("./pages/17-pages-device.css");
+@import url("./pages/18-pages-scan.css");
+@import url("./components/19-components-filter.css");
+@import url("./components/20-components-table.css");
+@import url("./pages/21-pages-compare.css");
+@import url("./pages/22-pages-globalNav.css");
+@import url("./components/23-components-pager.css");
+@import url("./components/24-components-toast.css");
+@import url("./components/26-components-modal.css");
+@import url("./components/25-components-bottom.css");
+@import url("./99-responsive.css");
+@import url("./pages/30-pages-auth.css");
+@import url("./pages/31-pages-finance.css");
+@import url("./32-dashboard-shell.css");

@@ -1,0 +1,30 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/14-components-fold.css — extracted from inventory-check.html */
+/* ===== 折叠说明（低频说明性内容收起，点击展开） ===== */
+    .fold-note { margin-top: 12px; }
+    .fold-note > summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      padding: 3px 0;
+      transition: color 0.15s ease;
+    }
+    .fold-note > summary::-webkit-details-marker { display: none; }
+    .fold-note > summary:hover { color: var(--primary); border-color: var(--primary); }
+    .fold-note > summary iconify-icon { transition: transform 0.2s ease; }
+    .fold-note[open] > summary iconify-icon { transform: rotate(90deg); }
+    .fold-note .fold-body {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+    }

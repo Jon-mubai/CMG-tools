@@ -1,0 +1,118 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/23-components-pager.css — extracted from inventory-check.html */
+/* ===== 分页 ===== */
+    .pager {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+      font-size: 13px;
+    }
+    .pager-left, .pager-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pager-info { color: var(--text-secondary); font-weight: 500; font-variant-numeric: tabular-nums; }
+    .pager-size-select, .pager-jump-input {
+      padding: 2px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      font-size: 12px;
+      outline: none;
+      background: #fff;
+      transition: all 0.15s ease;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      height: 24px;
+      min-height: 24px;
+      box-sizing: border-box;
+      line-height: 1.2;
+    }
+    .pager-size-select:focus, .pager-jump-input:focus {
+      border-color: var(--primary);
+    }
+    .pager-jump-input { width: 56px; text-align: center; }
+    .pager-btns { display: flex; gap: 6px; align-items: center; }
+    .pager-btns .btn { min-width: 40px; }
+    .pager-btns #pageNum { font-weight: 700; color: var(--text); min-width: 50px; text-align: center; font-variant-numeric: tabular-nums; }
+
+    /* 盘点明细：表头和分页器固定，中间滚动 */
+    .detail-card {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      min-height: 480px;
+    }
+    .detail-card .card-title { flex-shrink: 0; }
+    .detail-card .search-bar { flex-shrink: 0; }
+    .detail-card .filter-bar { flex-shrink: 0; }
+    .detail-card .table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      min-height: 0;
+    }
+    .detail-card .table-wrap table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .detail-card .pager {
+      flex-shrink: 0;
+      margin-top: 14px;
+    }
+
+
+/* 页脚「每页 N 条」气泡：高度减小约 1/3（36→24） */
+.pager .pg-size.bubble .bubble-trigger,
+.pager .bubble.pg-size .bubble-trigger,
+.pager-left .bubble .bubble-trigger {
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+  line-height: 22px !important;
+  border-radius: 8px !important;
+  box-sizing: border-box;
+}
+.pager .pg-size.bubble .bubble-caret,
+.pager-left .bubble .bubble-caret {
+  width: 10px !important;
+  height: 10px !important;
+}
+.pager .pager-size-select {
+  height: 24px;
+  min-height: 24px;
+}
+
+
+/* 上一页 / 下一页：无箭头，统一宽度 */
+.pager .pg-prev,
+.pager .pg-next,
+.pager-btns .pg-prev,
+.pager-btns .pg-next,
+#btnPrev,
+#btnNext {
+  min-width: 72px !important;
+  width: 72px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 10px !important;
+  justify-content: center;
+  box-sizing: border-box;
+  font-size: 12px !important;
+}
+.pager .pg-prev iconify-icon,
+.pager .pg-next iconify-icon,
+#btnPrev iconify-icon,
+#btnNext iconify-icon {
+  display: none !important;
+}

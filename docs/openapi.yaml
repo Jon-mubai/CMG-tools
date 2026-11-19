@@ -1,0 +1,408 @@
+openapi: 3.0.3
+info:
+  title: WMS-Tec / CMG Inventory API
+  version: 1.0.0
+  description: |
+    智能仓储盘点系统 API 契约（唯一真相）。
+    前端与后端实现必须与本文档对齐；变更先改 docs 再改代码。
+servers:
+  - url: /api/v1
+    description: 相对网关前缀
+tags:
+  - name: auth
+  - name: users
+  - name: inventory
+  - name: stocktake
+  - name: documents
+  - name: machine
+  - name: meta
+paths:
+  /health:
+    get:
+      tags: [meta]
+      summary: 健康检查
+      description: |
+        无需鉴权。数据库不可用时返回 503，用于容器编排的存活/就绪探针。
+      responses:
+        '200':
+          description: 服务与数据库均正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  service: { type: string }
+                  db: { type: string, example: up }
+                  time: { type: string, format: date-time }
+        '503':
+          description: 数据库不可用或未配置
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  service: { type: string }
+                  db: { type: string, description: 失败原因 }
+                  time: { type: string, format: date-time }
+  /meta/features:
+    get:
+      tags: [meta]
+      summary: 功能权限清单（与 shared/permissions 一致）
+      responses:
+        '200':
+          description: 功能列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  features:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key: { type: string }
+                        label: { type: string }
+  /meta/config:
+    get:
+      tags: [meta]
+      summary: 公开运行配置（联系管理员 URL 等，由环境变量注入）
+      responses:
+        '200':
+          description: 配置
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contactAdminUrl: { type: string }
+                  appName: { type: string }
+                  apiModeDefault: { type: string }
+  /audit/logs:
+    get:
+      tags: [meta]
+      summary: 操作审计日志
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50 }
+      responses:
+        '200':
+          description: 审计列表
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: 账号密码登录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResult'
+        '401':
+          description: 账号或密码错误
+        '423':
+          description: 账号锁定
+  /auth/logout:
+    post:
+      tags: [auth]
+      summary: 退出登录
+      responses:
+        '204':
+          description: 已退出
+  /auth/me:
+    get:
+      tags: [auth]
+      summary: 当前会话用户
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: 当前用户
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionUser'
+        '401':
+          description: 未登录
+  /inventory/items:
+    get:
+      tags: [inventory]
+      summary: 库存列表
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: pageSize
+          schema: { type: integer, minimum: 1, maximum: 200, default: 50 }
+      responses:
+        '200':
+          description: 分页库存
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryPage'
+  /inventory/items/bulk:
+    post:
+      tags: [inventory]
+      summary: 批量写入/覆盖库存行
+      description: |
+        在单个事务内 upsert 商品主数据与库存行，任一环节失败整体回滚。
+        非管理员只能写入其 warehouseIds 数据范围内的仓库。
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BulkUpsertRequest' }
+      responses:
+        '200':
+          description: 写入结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  count: { type: integer, description: 实际写入行数 }
+        '400': { description: items 必须为数组 }
+        '401': { description: 未登录 }
+        '403': { description: 缺少 wh-stock 权限 }
+  /stocktake/sessions:
+    get:
+      tags: [stocktake]
+      summary: 盘点会话/报告列表
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50, minimum: 1, maximum: 200 }
+      responses:
+        '200':
+          description: 列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/StocktakeSession' }
+        '401': { description: 未登录 }
+        '403': { description: 缺少 scan-data 权限 }
+    post:
+      tags: [stocktake]
+      summary: 保存盘点结果
+      description: |
+        会话与明细在单个事务内写入。明细为快照式：写入后不再随库存变动而改变，
+        保证历史报告可复现。
+        **必须携带 warehouseId**，否则明细无法归属仓库，返回 400。
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StocktakeSaveRequest' }
+      responses:
+        '201':
+          description: 已创建
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  session: { $ref: '#/components/schemas/StocktakeSession' }
+        '400': { description: 缺少 warehouseId }
+        '401': { description: 未登录 }
+        '403': { description: 缺少 scan 权限 }
+  /stocktake/sessions/{id}:
+    get:
+      tags: [stocktake]
+      summary: 盘点会话详情（含明细）
+      description: |
+        返回单次盘点的完整快照。权限与列表一致（需 scan-data）。
+        未找到时返回 404。
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+          example: st_mvb5difb_2f332244
+      responses:
+        '200':
+          description: 详情
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StocktakeDetail' }
+        '401': { description: 未登录 }
+        '403': { description: 缺少 scan-data 权限 }
+        '404': { description: 盘点记录不存在 }
+  /documents:
+    get:
+      tags: [documents]
+      summary: 单据列表
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: 单据分页
+    post:
+      tags: [documents]
+      summary: 上传单据元数据
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201':
+          description: 已创建
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    SessionUser:
+      type: object
+      properties:
+        userId: { type: string }
+        username: { type: string }
+        role: { type: string, enum: [admin, user] }
+        features:
+          type: array
+          items: { type: string }
+          description: 功能权限键，与 shared/permissions.js 的 FEATURES 对齐
+        mustChangePwd: { type: boolean }
+        warehouseIds:
+          type: array
+          items: { type: string }
+          description: |
+            数据范围（可访问的仓库）。空数组表示不限制，仅管理员。
+            非管理员查询库存时按此过滤：商品 warehouse_ids 为空视为全局商品可见，
+            否则要求与之有交集。
+        plan: { type: string, description: 订阅套餐 }
+        paid: { type: boolean }
+        validFrom: { type: string, format: date, nullable: true }
+        validUntil: { type: string, format: date, nullable: true }
+    LoginResult:
+      type: object
+      properties:
+        token: { type: string }
+        user: { $ref: '#/components/schemas/SessionUser' }
+    InventoryItem:
+      type: object
+      properties:
+        id: { type: string }
+        code: { type: string }
+        name: { type: string }
+        barcode: { type: string }
+        category: { type: string, description: 商品分类 }
+        spec: { type: string, description: 规格 }
+        warehouseId:
+          type: string
+          description: |
+            库存所属仓库。商品可归属多仓（items.warehouse_ids 为数组），
+            此处返回该商品库存行对应的仓库；无库存行时为空串。
+        systemQty: { type: number, description: 账面数量 }
+        actualQty: { type: number, description: 实盘数量，未盘点时为 0 }
+        diff:
+          type: number
+          readOnly: true
+          description: |
+            差异 = actualQty - systemQty。
+            由数据库生成列（GENERATED ALWAYS AS ... STORED）计算，
+            不信任客户端算出的值。
+    InventoryPage:
+      type: object
+      properties:
+        total: { type: integer }
+        page: { type: integer }
+        pageSize: { type: integer }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/InventoryItem' }
+    BulkUpsertRequest:
+      type: object
+      properties:
+        warehouseId:
+          type: string
+          description: 写入库存行所用的仓库 id
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/InventoryItem' }
+    StocktakeSession:
+      type: object
+      properties:
+        id: { type: string, example: st_mvb5difb_2f332244 }
+        warehouseId: { type: string }
+        title: { type: string }
+        status:
+          type: string
+          enum: [open, closed, archived]
+        itemCount: { type: integer }
+        summary:
+          type: object
+          nullable: true
+          additionalProperties: true
+        createdBy: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        closedAt: { type: string, format: date-time, nullable: true }
+    StocktakeLine:
+      type: object
+      properties:
+        itemId: { type: string }
+        code: { type: string }
+        name: { type: string }
+        barcode: { type: string }
+        systemQty: { type: number }
+        actualQty: { type: number }
+        diff:
+          type: number
+          readOnly: true
+          description: 差异，由数据库生成列计算
+        scannedAt: { type: string, format: date-time, nullable: true }
+    StocktakeDetail:
+      allOf:
+        - $ref: '#/components/schemas/StocktakeSession'
+        - type: object
+          properties:
+            lines:
+              type: array
+              items: { $ref: '#/components/schemas/StocktakeLine' }
+    StocktakeSaveRequest:
+      type: object
+      required: [warehouseId]
+      properties:
+        warehouseId: { type: string }
+        title: { type: string }
+        summary:
+          type: object
+          additionalProperties: true
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              code: { type: string }
+              name: { type: string }
+              barcode: { type: string }
+              systemQty: { type: number }
+              actualQty: { type: number }

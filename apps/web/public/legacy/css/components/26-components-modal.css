@@ -1,0 +1,53 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-12
+ * Role: Full-Stack Developer
+ */
+/* 全局确认弹窗 — 默认隐藏，避免确定/取消按钮落在页面底部 */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.45);
+  box-sizing: border-box;
+}
+.modal-overlay.show {
+  display: flex;
+}
+.modal-box {
+  width: min(420px, 100%);
+  max-height: min(80vh, 640px);
+  overflow: auto;
+  background: #fff;
+  border-radius: var(--radius-lg, 12px);
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.16);
+  padding: 20px 20px 16px;
+  box-sizing: border-box;
+}
+.modal-overlay.modal-wide .modal-box {
+  width: min(1040px, 96vw);
+}
+.modal-overlay.modal-form .modal-box {
+  width: min(760px, 94vw);
+}
+.modal-content {
+  font-size: 14px;
+  color: #0a0a0a;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.modal-actions .btn {
+  min-width: 72px;
+}

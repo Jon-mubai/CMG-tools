@@ -1,0 +1,39 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/13-components-upload.css — extracted from inventory-check.html */
+/* ===== 上传区（虚线框是拖放功能提示，属控件而非模块装饰） ===== */
+    .upload-area {
+      border: 1.5px dashed var(--primary-border);
+      border-radius: var(--radius-sm);
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+    .upload-area:hover { border-color: var(--primary); background: var(--primary-bg); }
+    .upload-area:active, .upload-area.dragover {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+    }
+    .upload-area input { display: none; }
+    .upload-area > div:first-of-type { font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 8px; }
+    .upload-hint { font-size: 12px; color: var(--muted); margin-top: 10px; line-height: 1.7; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+
+    .tip-box {
+      margin-top: 14px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .tip-box iconify-icon { flex-shrink: 0; margin-top: 2px; color: var(--muted); }

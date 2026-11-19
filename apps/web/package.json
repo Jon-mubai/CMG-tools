@@ -1,0 +1,16 @@
+{
+  "name": "@cmg/web",
+  "version": "3.1.0",
+  "private": true,
+  "description": "WMS-Tec 完整业务前端（经典 UI 全量恢复）+ NestJS API",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 8080",
+    "start": "vite preview --port 8080"
+  },
+  "devDependencies": {
+    "vite": "^6.0.3"
+  }
+}

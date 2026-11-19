@@ -1,0 +1,78 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/pages/17-pages-device.css — extracted from inventory-check.html */
+/* ===== USB设备状态 ===== */
+    /* 扫码行：设备连接模块在左，扫码输入框在右，同一行垂直居中对齐 */
+    .scan-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .device-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .device-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      min-width: 0;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .status-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      opacity: 0;
+    }
+    /* 未连接 */
+    .device-status.disconnected .status-dot { background: #a3a3a3; }
+    /* 检测中 */
+    .device-status.detecting .status-dot {
+      background: #525252;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    .device-status.detecting .status-dot::after {
+      border-color: #525252;
+      opacity: 0.4;
+      animation: pulse-ring 1.2s ease-out infinite;
+    }
+    /* 已连接-键盘模式 */
+    .device-status.connected-kb .status-dot { background: #1a1a1a; box-shadow: 0 0 6px rgba(0,0,0,0.3); }
+    .device-status.connected-kb .status-text { color: var(--text); font-weight: 600; }
+    /* 已连接-WebHID */
+    .device-status.connected-hid .status-dot { background: #1a1a1a; box-shadow: 0 0 8px rgba(0,0,0,0.4); }
+    .device-status.connected-hid .status-text { color: var(--text); font-weight: 600; }
+    /* 不支持 */
+    .device-status.unsupported .status-dot { background: #d4d4d4; }
+    .device-status.unsupported .status-text { color: var(--muted); }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 0.6; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+    .tip-usb { color: var(--muted); font-size: 12px; }

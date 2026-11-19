@@ -1,0 +1,193 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/pages/18-pages-scan.css — extracted from inventory-check.html */
+/* ===== 扫码 ===== */
+    .scan-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .scan-input {
+      flex: 1;
+      max-width: 480px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      outline: none;
+      min-width: 0;
+      background: #fff;
+      transition: all 0.15s ease;
+      color: var(--text);
+    }
+    .scan-input::placeholder { color: var(--muted); }
+    .scan-input:focus { border-color: var(--primary); }
+    .last-scan {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 10px;
+      word-break: break-all;
+      padding: 0;
+      display: none;
+      line-height: 1.6;
+    }
+    .last-scan.show { display: block; }
+    .pending-barcode-hint {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px dashed var(--primary);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: none;
+      line-height: 1.6;
+    }
+    .pending-barcode-hint.show { display: block; }
+    #reader {
+      width: 100%;
+      max-width: 360px;
+      margin: 14px auto 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      display: none;
+      border: 1px solid var(--border);
+    }
+    #reader.active { display: block; }
+    .scan-tip { font-size: 12px; color: var(--muted); margin-top: 14px; line-height: 1.7; }
+
+    /* ===== 扫码双栏布局 ===== */
+    /* ===== 盘点作业：步骤分隔 ===== */
+    .work-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 2px 0 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+    /* 扫码区：两种方式上下排列，各自占满整行 */
+    .scan-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .scan-grid > .card { height: auto; display: flex; flex-direction: column; }
+    .scan-grid .card { margin-bottom: 0; }
+    .scan-card-usb .card-title,
+    .scan-card-camera .card-title { gap: 8px; }
+
+    /* 页面内二级标题（拆分后的独立页面用） */
+    .page-head { margin-bottom: 16px; }
+    .page-head-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 4px;
+      letter-spacing: 0.1px;
+    }
+    .page-head-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    /* 扫码输入框组 */
+    .scan-input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+      /* 扫码枪只需一个聚焦输入区：与设备模块同行，右侧自适应占满剩余空间 */
+      flex: 1 1 320px;
+      min-width: 0;
+      max-width: 440px;
+    }
+    .scan-input-group .scan-input {
+      max-width: none;
+      padding-left: 42px;
+    }
+    .scan-input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      z-index: 1;
+      pointer-events: none;
+      transition: color 0.15s ease;
+    }
+    .scan-input-group .scan-input:focus ~ .scan-input-icon,
+    .scan-input-group:focus-within .scan-input-icon { color: var(--primary); }
+
+    /* 摄像头区域 */
+    .camera-actions {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+    .camera-actions .btn {
+      width: auto;
+      min-width: 180px;
+      gap: 8px;
+    }
+    .camera-placeholder {
+      text-align: center;
+      padding: 36px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .camera-placeholder p { margin-top: 10px; }
+    .camera-placeholder.hidden { display: none; }
+    #reader { margin: 0 auto; }
+
+    /* 提示项列表 */
+    .scan-tip .tip-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+    .scan-tip .tip-item:last-child { margin-bottom: 0; }
+    .scan-tip .tip-item iconify-icon {
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--muted);
+    }
+
+    /* ===== 扫码会话统计 ===== */
+    .scan-session {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .scan-session .ss-item {
+      flex: 1;
+      padding: 10px 6px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+    .scan-session .ss-v {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: -0.4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .scan-session .ss-k { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .scan-session .ss-ico { display: block; margin: 0 auto 3px; color: var(--muted); }
+    .scan-session .ss-item.is-ok .ss-v { color: #171717; }
+    .scan-session .ss-item.is-warn .ss-v { color: #525252; }
+    .scan-session .ss-item.is-danger .ss-v { color: #171717; }

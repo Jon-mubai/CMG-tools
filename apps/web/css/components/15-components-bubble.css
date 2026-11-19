@@ -1,0 +1,217 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/15-components-bubble.css
+ * 全站下拉菜单统一为「气泡弹窗」样式。
+ * 约定：新增/改造下拉必须使用 .bubble + createBubble 或 upgradeNativeSelect，禁止裸 select 外观。
+ */
+
+.bubble {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 100%;
+}
+.bubble-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 12px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text, #0f172a);
+  background: #fff;
+  border: 1px solid var(--border, #e5e5e5);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  box-shadow: none;
+}
+.bubble-trigger:hover {
+  border-color: #d4d4d4;
+  background: #fafafa;
+}
+.bubble.open .bubble-trigger,
+.bubble-trigger:focus {
+  outline: none;
+  border-color: #a3a3a3;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04);
+}
+.bubble-trigger .bubble-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  flex: 1 1 auto;
+}
+.bubble-trigger .bubble-caret {
+  color: #a3a3a3;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.bubble.open .bubble-caret {
+  transform: rotate(180deg);
+}
+
+/* 气泡面板 */
+.bubble-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 3000;
+  min-width: 100%;
+  max-width: min(100vw - 24px, 420px);
+  max-height: 280px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+  display: none;
+}
+.bubble-menu.up {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+.bubble.open .bubble-menu {
+  display: block;
+}
+
+.bubble-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text, #0f172a);
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+.bubble-item:hover,
+.bubble-item:focus {
+  background: #f5f5f5;
+  outline: none;
+}
+.bubble-item.active {
+  font-weight: 600;
+  background: #f5f5f5;
+}
+.bubble-item.active .bubble-check {
+  opacity: 1;
+}
+.bubble-check {
+  opacity: 0;
+  color: var(--text, #0f172a);
+  flex-shrink: 0;
+}
+.bubble-text {
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--text-secondary, #64748b);
+  max-width: 320px;
+  white-space: normal;
+}
+
+.bubble-fill {
+  display: inline-block;
+  min-width: 190px;
+  vertical-align: middle;
+}
+.bubble-fill .bubble-trigger {
+  width: 100%;
+}
+.bubble-sm .bubble-trigger {
+  height: 30px;
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  border-radius: 7px;
+}
+.bubble-sm .bubble-menu {
+  border-radius: 10px;
+}
+.bubble-block,
+.bubble.bubble-block {
+  display: block;
+  width: 100%;
+}
+.bubble-block .bubble-trigger {
+  width: 100%;
+}
+
+/* 原生 select 升级后隐藏，仅保留无障碍与表单提交 */
+select.bubble-native-hidden,
+.bubble-upgraded-source {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* 日期触发器等与气泡触发器视觉对齐 */
+.mp-dp-trigger {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 12px !important;
+  font-size: 13px !important;
+  font-weight: 500;
+  color: var(--text, #0f172a) !important;
+  background: #fff !important;
+  border: 1px solid var(--border, #e5e5e5) !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.mp-dp-trigger:hover {
+  border-color: #d4d4d4 !important;
+  background: #fafafa !important;
+}
+.mp-datepicker.open .mp-dp-trigger,
+.mp-dp-trigger:focus {
+  outline: none !important;
+  border-color: #a3a3a3 !important;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.04) !important;
+}
+.mp-dp-panel {
+  border-radius: 12px !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* finance filter stack */
+#page-finance-ledger .bubble.open { z-index: 50; }
+#page-finance-ledger .bubble-menu { z-index: 30050 !important; }

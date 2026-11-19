@@ -1,0 +1,248 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  username           String    @unique
+  displayName        String?   @map("display_name")
+  passwordHash       String    @map("password_hash")
+  /// super_admin | admin | user
+  role               String    @default("user")
+  features           String[]  @default([])
+  plan               String?
+  paid               Boolean   @default(false)
+  validFrom          DateTime? @map("valid_from") @db.Date
+  validUntil         DateTime? @map("valid_until") @db.Date
+  enabled            Boolean   @default(true)
+  mustChangePwd      Boolean   @default(false) @map("must_change_pwd")
+  /// 示例引导账号：首次强制改密后清除，初始凭据彻底失效
+  isBootstrap        Boolean   @default(false) @map("is_bootstrap")
+  bootstrapDestroyed Boolean   @default(false) @map("bootstrap_destroyed")
+  failCount          Int       @default(0) @map("fail_count")
+  lockedUntil        DateTime? @map("locked_until")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+  deletedAt          DateTime? @map("deleted_at")
+  sessions           Session[]
+  auditLogs          AuditLog[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  tokenHash String    @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model InventoryDoc {
+  id          String    @id @default(cuid())
+  docNo       String?   @map("doc_no")
+  supplier    String?
+  periodStart DateTime? @map("period_start") @db.Date
+  periodEnd   DateTime? @map("period_end") @db.Date
+  createdBy   String?   @map("created_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  lines       InventoryLine[]
+
+  @@map("inventory_docs")
+}
+
+model InventoryLine {
+  id      String  @id @default(cuid())
+  docId   String  @map("doc_id")
+  skuCode String? @map("sku_code")
+  skuName String? @map("sku_name")
+  qty     Decimal? @db.Decimal(14, 3)
+  amount  Decimal? @db.Decimal(14, 2)
+  doc     InventoryDoc @relation(fields: [docId], references: [id], onDelete: Cascade)
+
+  @@map("inventory_lines")
+}
+
+model MachineProfitWeekly {
+  id          String   @id @default(cuid())
+  periodStart DateTime @map("period_start") @db.Date
+  periodEnd   DateTime @map("period_end") @db.Date
+  machineCode String?  @map("machine_code")
+  machineName String?  @map("machine_name")
+  coinRevenue Decimal? @map("coin_revenue") @db.Decimal(14, 2)
+  giftCost    Decimal? @map("gift_cost") @db.Decimal(14, 2)
+  grossProfit Decimal? @map("gross_profit") @db.Decimal(14, 2)
+  grossMargin Decimal? @map("gross_margin") @db.Decimal(8, 4)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("machine_profit_weekly")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?  @map("actor_user_id")
+  action      String
+  targetType  String?  @map("target_type")
+  targetId    String?  @map("target_id")
+  detailJson  Json?    @map("detail_json")
+  createdAt   DateTime @default(now()) @map("created_at")
+  actor       User?    @relation(fields: [actorUserId], references: [id])
+
+  @@map("audit_logs")
+}
+
+/// 备用金总额与配置（定额取「当前生效周期」，非历史周期累加）
+model FinanceReserve {
+  id          String   @id @default(cuid())
+  /// 当前生效定额（由 periods 中命中今天的周期金额写入，禁止多周期相加）
+  totalAmount Decimal  @default(0) @map("total_amount") @db.Decimal(14, 2)
+  /// 额度周期列表 [{ id, amount, start, end }]
+  periods     Json     @default("[]")
+  /// 来源渠道 [{ id, serial, name, amount, payer, payee, boundAt, periodId, images }]
+  sources     Json     @default("[]")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  updatedBy   String?  @map("updated_by")
+
+  @@map("finance_reserves")
+}
+
+/// 备用金来源（结构化表；与 FinanceReserve.sources JSON 双写，保证可查询）
+/// 前端序号规则：YYYYMMDD + 三位自增，如 20261029001
+model FinanceSource {
+  id        String    @id @default(cuid())
+  /// 业务序号（日期+三位），展示用
+  serial    String?   @unique
+  /// 金额来源名称
+  name      String
+  /// 来源金额
+  amount    Decimal   @default(0) @db.Decimal(14, 2)
+  /// 拨款人 / 付款人
+  payer     String?
+  /// 接收人 / 收款人
+  payee     String?
+  /// 绑定时间（业务日）
+  boundAt   DateTime? @map("bound_at") @db.Date
+  /// 绑定的额度周期 id（对应 periods[].id / FinanceReservePeriod.id）
+  periodId  String?   @map("period_id")
+  /// 收付凭证图片 [{ dataUrl, fileName }]
+  images    Json      @default("[]")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([periodId])
+  @@index([boundAt])
+  @@map("finance_sources")
+}
+
+/// 额度周期（结构化；与 FinanceReserve.periods JSON 双写）
+model FinanceReservePeriod {
+  id        String    @id @default(cuid())
+  amount    Decimal   @default(0) @db.Decimal(14, 2)
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime  @map("end_date") @db.Date
+  /// 是否锁定（保存后不可改金额，仅可删）
+  locked    Boolean   @default(true)
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@index([startDate, endDate])
+  @@map("finance_reserve_periods")
+}
+
+/// 备用金使用登记 + 审批状态机
+model FinanceRecord {
+  id               String    @id @default(cuid())
+  item             String
+  purpose          String?
+  description      String?
+  qty              Decimal?  @db.Decimal(14, 3)
+  amount           Decimal   @default(0) @db.Decimal(14, 2)
+  dateStart        DateTime? @map("date_start") @db.Date
+  dateEnd          DateTime? @map("date_end") @db.Date
+  userName         String?   @map("user_name")
+  /// 指定审核人登录名，须与 users.username 一致
+  auditor          String?
+  operator         String?
+  payType          String?   @map("pay_type")
+  receiptType      String?   @map("receipt_type")
+  inboundNo        String?   @map("inbound_no")
+  remark           String?
+  /// 已报销：金额回流定额，不计入累计支出
+  reimbursed       Boolean   @default(false)
+  /// 付款截图 [{ dataUrl, fileName }]
+  payImages        Json      @default("[]") @map("pay_images")
+  /// 发票图片 [{ dataUrl, fileName }]
+  invoiceImages    Json      @default("[]") @map("invoice_images")
+  /// 订单截图 [{ dataUrl, fileName }]
+  otherImages      Json      @default("[]") @map("other_images")
+  /// pending | in_review | passed | rejected
+  reviewStatus     String    @default("pending") @map("review_status")
+  reviewNeedRevise Boolean   @default(false) @map("review_need_revise")
+  reviewTerminate  Boolean   @default(false) @map("review_terminate")
+  reviewer         String?
+  reviewedAt       DateTime? @map("reviewed_at")
+  reviewNote       String?   @map("review_note")
+  /// 从审核列表移除（使用记录仍保留）
+  reviewHidden     Boolean   @default(false) @map("review_hidden")
+  reviewHiddenAt   DateTime? @map("review_hidden_at")
+  reviewHistory    Json      @default("[]") @map("review_history")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  deletedAt        DateTime? @map("deleted_at")
+  deletedBy        String?   @map("deleted_by")
+
+  @@index([reviewStatus])
+  @@index([reimbursed])
+  @@index([auditor])
+  @@index([operator])
+  @@map("finance_records")
+}
+
+/// 机台运营调拨 / 库存变更明细，替代整表 KV
+model MachineOpsRow {
+  id         Int      @id @default(autoincrement())
+  kind       String
+  docNo      String?  @map("doc_no")
+  product    String?
+  qty        Float    @default(0)
+  amount     Float    @default(0)
+  fromWh     String?  @map("from_wh")
+  toWh       String?  @map("to_wh")
+  period     String?
+  operator   String?
+  occurredAt String?  @map("occurred_at")
+  changeType String?  @map("change_type")
+  summary    String?
+  warehouse  String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([kind])
+  @@map("machine_ops_rows")
+}
+
+/// 通用业务 JSON 存储：替代浏览器 localStorage 的业务键值
+model AppKv {
+  id        String   @id @default(cuid())
+  /// 逻辑键，如 cmg_items_v1、machine_profit_source_v2
+  key       String
+  /// 作用域：global | user:{userId}
+  scope     String   @default("global")
+  payload   Json
+  updatedBy String?  @map("updated_by")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([key, scope])
+  @@map("app_kv")
+}

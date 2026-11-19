@@ -1,0 +1,20 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/05-components-illus.css — extracted from inventory-check.html */
+/* ===== 线描插图（内联 SVG，沿用灰阶、无外链）===== */
+    .illus {
+      display: block;
+      margin: 0 auto 14px;
+      color: var(--muted);
+      overflow: visible;
+    }
+    .illus .il-a { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .illus .il-b { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; opacity: 0.42; }
+    .illus .il-t { fill: none; stroke: currentColor; stroke-width: 4; stroke-linecap: butt; }
+    .illus .il-f { fill: currentColor; opacity: 0.08; stroke: none; }
+    .upload-area .illus { margin-bottom: 12px; }
+    .empty .illus { margin: 0 auto 12px; }
+    .camera-placeholder .illus { margin-bottom: 4px; }

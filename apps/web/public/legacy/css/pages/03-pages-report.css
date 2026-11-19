@@ -1,0 +1,73 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10
+ * Role: Full-Stack Developer
+ */
+/* css/pages/03-pages-report.css — extracted from inventory-check.html */
+/* ===== 盘点数据页：报告条目（发丝线列表，非卡片） ===== */
+    .snapshot-card {
+      padding: 16px 2px;
+      border: 0;
+      border-bottom: 1px solid var(--border-light);
+      border-radius: 0;
+      background: transparent;
+      margin-bottom: 0;
+    }
+    .snapshot-card:last-child { border-bottom: 0; }
+    .snapshot-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .snapshot-title {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 15px;
+      min-width: 0;
+    }
+    .snapshot-title strong {
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.1px;
+      /* 报告名过长时省略，避免把操作按钮挤出可视区 */
+      max-width: 46ch;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .snapshot-title iconify-icon { align-self: center; }
+    .snapshot-time {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .snapshot-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+    .snapshot-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+    .snapshot-meta > span { display: inline-flex; align-items: baseline; gap: 5px; }
+    .snapshot-meta b {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .snapshot-meta .meta-ok   b { color: #171717; }
+    .snapshot-meta .meta-up   b { color: #525252; }
+    .snapshot-meta .meta-down b { color: #171717; }
+    .empty-block {
+      padding: 40px 16px;
+      text-align: center;
+    }
+    .empty-block .illus { color: var(--muted); margin-bottom: 12px; }

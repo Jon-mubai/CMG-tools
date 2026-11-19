@@ -1,0 +1,183 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/pages/12-pages-cfg.css — extracted from inventory-check.html */
+/* ===== 仓库设置面板 ===== */
+    .wh-cfg {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      max-height: min(78vh, 680px);
+    }
+    /* 顶部操作栏：仓库列表标题 + 新增/删除图标按钮。
+       按钮独立于 Tab 列表，避免随 Tab 重绘被冲掉，也避免在窄弹窗里换行断开。 */
+    .wh-cfg-bar { display: flex; align-items: center; gap: 10px; }
+    .wh-cfg-bar-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.6px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .wh-cfg-bar-actions { margin-left: auto; display: flex; gap: 6px; }
+    .wh-cfg-ico {
+      width: 30px; height: 30px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: #fff; color: var(--text-secondary); cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .wh-cfg-ico:hover { border-color: var(--text); color: var(--text); background: var(--primary-bg); }
+    .wh-cfg-ico:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .wh-cfg-ico.danger:hover { border-color: var(--primary); background: var(--primary); color: #fff; }
+    .wh-cfg-ico.danger:hover iconify-icon { color: #fff; }
+    .wh-cfg-ico:disabled { opacity: 0.35; cursor: not-allowed; }
+    .wh-cfg-ico:disabled:hover { border-color: var(--border); background: #fff; color: var(--text-secondary); }
+    .wh-cfg-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border-light);
+    }
+    .wh-cfg-tab {
+      display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px;
+      padding: 7px 14px;
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: #fff; cursor: pointer;
+      font-size: 13px; color: var(--text);
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .wh-cfg-tab.active { background: var(--text); border-color: var(--text); color: #fff; }
+    .wh-cfg-tab.active .wh-cfg-tab-code { color: rgba(255, 255, 255, 0.7); }
+    .wh-cfg-tab-code { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .wh-cfg-body {
+      min-height: 220px;
+      max-height: min(52vh, 440px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+      flex: 1 1 auto;
+    }
+    .wh-cfg-foot {
+      flex: 0 0 auto;
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      align-items: center;
+      gap: 10px;
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light, #f0f0f0);
+      margin-top: 4px;
+      white-space: nowrap;
+    }
+    .wh-cfg-foot .btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+    /* 表单改双列：窄弹窗下 4 个字段挤在一行会把每个输入框压得过窄 */
+    .wh-cfg-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 280px));
+      gap: 10px 16px;
+      justify-content: start;
+    }
+    .wh-field { display: flex; flex-direction: column; gap: 5px; }
+    .wh-field > span { font-size: 12px; color: var(--text-secondary); }
+    .wh-inp {
+      width: 100%;
+      max-width: 280px;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      color: var(--text);
+      transition: border-color 0.15s ease;
+    }
+    .wh-inp:focus { border-color: var(--text); }
+    .wh-cfg-sub {
+      display: flex; align-items: center; gap: 10px;
+      margin: 14px 0 10px;
+      font-size: 12px; font-weight: 600; color: var(--text);
+    }
+    .wh-zone-list { display: flex; flex-direction: column; gap: 8px; }
+    /* 分区改卡片式：上排名称+礼品区+删除，下排参数。
+       单行平铺时参数多，窄弹窗下会换行且顺序错乱。 */
+    .wh-zone-row {
+      display: flex; flex-direction: column; gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: #fafafa;
+    }
+    .wh-zone-head { display: flex; align-items: center; gap: 8px; }
+    .wh-zone-idx {
+      width: 18px; height: 18px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 4px; background: var(--border-light);
+      color: var(--text-secondary); font-size: 10px; font-weight: 600;
+    }
+    .wh-zone-name {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 360px;
+    }
+    .wh-zone-name.wh-inp,
+    .wh-zone-head .wh-inp {
+      max-width: 360px;
+    }
+    .wh-zone-params {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 14px;
+      padding-left: 26px;
+    }
+    .wh-zone-params .wh-lbl {
+      flex: 0 0 auto;
+      gap: 4px;
+    }
+    .wh-zone-sum {
+      font-size: 11px;
+      color: var(--muted);
+      text-align: left;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      margin-left: 4px;
+    }
+    .wh-zone-del {
+      width: 26px; height: 26px; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; border-radius: 5px; background: transparent;
+      color: var(--muted); cursor: pointer; transition: all 0.15s ease;
+    }
+    .wh-zone-del:hover { background: var(--primary); color: #fff; }
+    .wh-zone-del:hover iconify-icon { color: #fff; }
+    .wh-lbl {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-secondary);
+    }
+    /* 分区参数下拉：统一走全局 .bubble 气泡组件，这里只做尺寸微调 */
+    .wh-lbl .bubble-trigger { height: 30px; min-width: 56px; padding: 0 8px 0 10px; font-size: 12px; }
+    .wh-chk {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; color: var(--text-secondary); cursor: pointer;
+    }
+    .wh-cfg-hint {
+      margin-top: 12px;
+      font-size: 12px; color: var(--text-secondary);
+    }
+    .wh-cfg-hint b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .wh-cfg-foot { display: flex; align-items: center; gap: 10px; padding-top: 4px; }
+
+.help-prose a {
+  color: #2563eb;
+  text-decoration: none;
+  word-break: break-all;
+}
+.help-prose a:hover { text-decoration: underline; }
+.help-meta {
+  font-size: 13px;
+  color: var(--muted, #737373);
+}

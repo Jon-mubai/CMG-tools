@@ -1,0 +1,296 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10-14
+ * Role: Full-Stack Developer
+ */
+/* css/components/20-components-table.css — extracted from inventory-check.html */
+/* ===== 表格（无外框：表头底线 + 行发丝线，数据自身分层） ===== */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 12px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+      vertical-align: middle;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      color: var(--text-secondary);
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      border-bottom: 1px solid var(--border);
+    }
+    td { word-break: break-all; }
+    tr.surplus td { background: #fafafa; }
+    tr.deficit td { background: #f7f7f7; }
+    tr.highlight td { background: #eef6ff !important; }
+    /* 保证行背景铺满，避免操作列露白 */
+    .data-table tbody tr td { background-color: inherit; }
+
+    /* 盘点前账面 / 账面对比：表格区独立滚动，表头与分页条固定
+       （th 的 sticky 需要祖先有滚动容器才会相对其吸附） */
+    .table-sticky {
+      max-height: 58vh;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-sticky th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #fafafa;
+    }
+    /* 分页条固定在表格下方，不随表体滚动 */
+    .table-sticky + .pager,
+    .pager-pinned {
+      flex-shrink: 0;
+    }
+    .pager-pinned {
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* 数量输入 + 步进 */
+    .qty-wrap { display: inline-flex; align-items: center; gap: 4px; }
+    .qty-step {
+      width: 26px;
+      height: 30px;
+      border-radius: 7px;
+      border: 1px solid var(--primary-border);
+      background: #f5f5f5;
+      color: #171717;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .qty-step:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+    .qty-step:active { transform: scale(0.95); }
+    .qty-input {
+      width: 58px;
+      padding: 7px 6px;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      text-align: center;
+      font-size: 14px;
+      -moz-appearance: textfield;
+      background: #fff;
+      transition: all 0.15s ease;
+      color: var(--text);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .qty-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .diff-cell { font-weight: 600; font-variant-numeric: tabular-nums; }
+    .diff-pos { color: #525252; }
+    .diff-neg { color: #171717; }
+    .diff-zero { color: #171717; }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      letter-spacing: 0.2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .tag-ok { background: #f5f5f5; color: #171717; border: 1px solid #d4d4d4; }
+    .tag-up { background: #fafafa; color: #525252; border: 1px solid #e5e5e5; }
+    .tag-down { background: #f5f5f5; color: #171717; border: 1px solid #d4d4d4; }
+    .tag-mute { background: #fff; color: #a3a3a3; border: 1px dashed #d4d4d4; }
+
+
+/* ========== 统一约定：有分页的表格模块必须固定表头 + 固定页脚 ==========
+   结构：.card.card-table-fixed > .card-title + .table-wrap.table-sticky + .pager-pinned
+   之后新增模块凡含页脚分页，均应使用本结构 / 本样式。 */
+.card-table-fixed,
+.card:has(> .table-wrap.table-sticky):has(.pager-pinned),
+.card:has(> .table-wrap.table-sticky + .pager-pinned),
+.tab-panel > .card:has(.table-sticky) {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 168px);
+  min-height: 320px;
+  overflow: hidden;
+}
+.card-table-fixed > .card-title,
+.card:has(.table-sticky) > .card-title,
+.card:has(.table-sticky) > .filter-bar,
+.card:has(.table-sticky) > .search-bar,
+.card:has(.table-sticky) > .toolbar {
+  flex-shrink: 0;
+}
+.card-table-fixed > .table-wrap.table-sticky,
+.card:has(.pager-pinned) > .table-wrap.table-sticky,
+.tab-panel > .card > .table-wrap.table-sticky {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-sticky thead th,
+.table-wrap.table-sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: #fafafa;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+.card-table-fixed > .pager-pinned,
+.card:has(.table-sticky) > .pager-pinned,
+.table-sticky + .pager-pinned,
+.pager-pinned {
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  margin-top: 0;
+  padding: 10px 4px 6px;
+  background: #fff;
+  border-top: 1px solid var(--border-light, rgba(0,0,0,0.06));
+}
+
+/* 库存管理：预警列表无 table-wrap 时页脚仍固定 */
+#page-wh-stock .card:has(#stockAlertPager),
+#page-wh-stock .card:has(#stockFlowPager) {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 168px);
+  overflow: hidden;
+}
+#page-wh-stock #stockAlertList,
+#page-wh-stock #stockFlowList {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+#page-wh-stock #stockAlertPager,
+#page-wh-stock #stockFlowPager,
+#page-wh-stock #stockSlowPager {
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 5;
+  border-top: 1px solid var(--border-light, rgba(0,0,0,0.06));
+  padding-top: 10px;
+}
+
+/* 盘点明细：头部固定 + 表头吸顶 + 无行间白缝 */
+#page-scan-data .detail-card,
+#page-scan-data .card:has(.table-sticky) {
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: calc(100vh - 148px) !important;
+  min-height: 280px;
+  overflow: hidden !important;
+}
+#page-scan-data .detail-card > .card-title,
+#page-scan-data .detail-card > .search-bar,
+#page-scan-data .detail-card > .detail-toolbar,
+#page-scan-data .detail-card > .filter-bar {
+  flex-shrink: 0 !important;
+  background: #fff;
+  z-index: 8;
+}
+#page-scan-data .table-wrap.table-sticky {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+  background: #fff;
+}
+#page-scan-data .table-wrap.table-sticky thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 6 !important;
+  background: #fafafa !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid #ebebeb !important;
+}
+#page-scan-data .pager-pinned {
+  flex-shrink: 0 !important;
+  background: #fff;
+  border-top: 1px solid #ebebeb;
+  padding: 10px 4px 6px;
+}
+
+#page-scan-data .data-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+  background: #fff;
+}
+#page-scan-data .data-table thead th,
+#page-scan-data .data-table tbody td {
+  padding: 12px 14px !important;
+  vertical-align: middle !important;
+  border: none !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  box-shadow: none !important;
+}
+#page-scan-data .data-table tbody tr {
+  background: #fff;
+}
+#page-scan-data .data-table tbody tr:hover td {
+  background: #fafafa !important;
+}
+#page-scan-data .data-table tbody tr.deficit td {
+  background: #fafafa;
+}
+#page-scan-data .data-table tbody tr.surplus td {
+  background: #fff;
+}
+#page-scan-data .data-table tbody tr.highlight td {
+  background: #f0f7ff !important;
+}
+/* 操作列：禁止 flex，避免表格行被撑出白缝 */
+#page-scan-data .data-table .op-cell,
+#page-scan-data td.op-cell {
+  display: table-cell !important;
+  width: 88px !important;
+  min-width: 88px !important;
+  max-width: 100px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  padding: 10px 8px !important;
+  vertical-align: middle !important;
+}
+#page-scan-data .data-table .op-cell .btn-del {
+  display: inline-flex !important;
+  margin: 0 !important;
+  vertical-align: middle;
+}
+#page-scan-data .data-table .name-cell {
+  max-width: 260px;
+}
+#page-scan-data .data-table thead th:last-child {
+  text-align: center;
+  width: 88px;
+}

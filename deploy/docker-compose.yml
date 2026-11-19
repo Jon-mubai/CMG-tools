@@ -1,4 +1,5 @@
-# Author: zcl (MuBai) · 2026-10-14
+# Author: zcl (MuBai)· 2026-10-14
+# 静态前端 + API 联调骨架
 services:
   frontend:
     image: nginx:alpine

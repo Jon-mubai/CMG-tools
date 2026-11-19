@@ -1,0 +1,303 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;background:#0c1220;padding:24px;display:flex;justify-content:center}.wrap{width:620px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.4))}</style></head><body><div class="wrap">
+<!--
+  Author: zcl (MuBai)
+  Date: 2026-10-18
+  Role: Full-Stack Developer
+
+  assets/auth-banner.svg — 登录页品牌区 banner
+
+  设计说明
+  --------
+  构型参考 TDesign Starter 登录页插画：等距应用图标 + 渐变球体 +
+  悬浮标签卡 + 背景大号数字，采用 2.5D 透视与柔和投影。
+
+  两处按本项目做了适配，不是照抄：
+  1. 配色改为项目设计令牌（--primary #1A1A1A、--text-secondary #525252），
+     而非参考图的 TDesign 蓝；
+  2. 底色按.auth-pane-brand 的深色渐变（#0C1220 → #060A12）出图，
+     因为该容器本身就是深色，浅底SVG 放进去会显得脏。
+
+  主题为仓储语义：仓库 / 周转箱 / 出库 / 盘点，对应左侧菜单的四个节点。
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 520" width="620" height="520"
+     role="img" aria-labelledby="bannerTitle bannerDesc">
+  <title id="bannerTitle">仓储管理数据中枢</title>
+  <desc id="bannerDesc">等距视角的仓库、周转箱与数据标签组成的抽象插画</desc>
+
+  <defs>
+    <!-- 主球体：中性灰蓝渐变，高光在左上 -->
+    <radialGradient id="gOrbPrimary" cx="34%" cy="28%" r="78%">
+      <stop offset="0%" stop-color="#E8EDF2"/>
+      <stop offset="42%" stop-color="#9AA7B4"/>
+      <stop offset="78%" stop-color="#4A5563"/>
+      <stop offset="100%" stop-color="#2C3540"/>
+    </radialGradient>
+
+    <!-- 次球体：青灰，暗示「已扫码/活跃」 -->
+    <radialGradient id="gOrbTeal" cx="36%" cy="30%" r="76%">
+      <stop offset="0%" stop-color="#DCE9E8"/>
+      <stop offset="46%" stop-color="#8FAFA9"/>
+      <stop offset="100%" stop-color="#3F5A57"/>
+    </radialGradient>
+
+    <!-- 浅色小球：带一点灰阶过渡，避免读作纯色块 -->
+    <radialGradient id="gOrbLight" cx="36%" cy="30%" r="74%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="52%" stop-color="#D8DEE5"/>
+      <stop offset="100%" stop-color="#93A0AD"/>
+    </radialGradient>
+
+    <!-- 立方体顶面 -->
+    <linearGradient id="gCubeTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F2F5F8"/>
+      <stop offset="100%" stop-color="#C3CCD6"/>
+    </linearGradient>
+    <!-- 立方体左侧面（背光） -->
+    <linearGradient id="gCubeLeft" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#AEB8C4"/>
+      <stop offset="100%" stop-color="#7C8794"/>
+    </linearGradient>
+    <!-- 立方体右侧面（受光） -->
+    <linearGradient id="gCubeRight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D5DDE5"/>
+      <stop offset="100%" stop-color="#9AA5B2"/>
+    </linearGradient>
+
+    <!-- 应用图标底板 -->
+    <linearGradient id="gAppTile" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0%" stop-color="#F7F9FB"/>
+      <stop offset="100%" stop-color="#B9C4D0"/>
+    </linearGradient>
+
+    <!-- 标签卡：主 / 次 -->
+    <linearGradient id="gTagPrimary" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#39424E"/>
+      <stop offset="100%" stop-color="#161C24"/>
+    </linearGradient>
+    <linearGradient id="gTagSecondary" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7C8794"/>
+      <stop offset="100%" stop-color="#59636F"/>
+    </linearGradient>
+
+    <!-- 地面椭圆衰减 -->
+    <radialGradient id="gFloorFade" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7C8794" stop-opacity="0.30"/>
+      <stop offset="55%" stop-color="#4A5563" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#0C1220" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 球体环境反射（下缘微亮，避免死黑） -->
+    <linearGradient id="gRimLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="72%" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#AFC4D8" stop-opacity="0.22"/>
+    </linearGradient>
+
+    <!-- 柔化投影 -->
+    <filter id="fSoft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <filter id="fSoftSmall" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <!-- 球体高光的柔化 -->
+    <filter id="fSpecular" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+  </defs>
+
+  <!-- ============ 背景装饰 ============ -->
+
+  <!-- 背景大号标识：极低不透明度，只作空间纵深，不抢主体 -->
+  <g opacity="0.038" fill="#FFFFFF" font-family="Helvetica Neue, Arial, sans-serif"
+     font-weight="700" text-anchor="end">
+    <text x="610" y="142" font-size="132" letter-spacing="-5">WMS</text>
+  </g>
+
+  <!-- 稀疏网格：比参考图再淡一档，仅暗示透视 -->
+  <g stroke="#FFFFFF" stroke-width="1" opacity="0.028" fill="none">
+    <path d="M0 118 L620 118"/>
+    <path d="M0 300 L620 300"/>
+    <path d="M0 462 L620 462"/>
+    <path d="M155 0 L155 520"/>
+    <path d="M310 0 L310 520"/>
+    <path d="M465 0 L465 520"/>
+  </g>
+
+  <!-- 地面光晕 -->
+  <ellipse cx="330" cy="452" rx="270" ry="66" fill="url(#gFloorFade)"/>
+
+  <!-- ============ 后景：悬浮标签卡 ============ -->
+
+  <!-- 左上「仓库 / WH」主标签 -->
+  <g transform="translate(74 108) rotate(-13)">
+    <rect x="0" y="0" width="132" height="40" rx="11" fill="url(#gTagPrimary)"/>
+    <rect x="0" y="0" width="132" height="40" rx="11" fill="#000000" opacity="0.22"/>
+    <rect x="0.75" y="0.75" width="130.5" height="38.5" rx="10.25"
+          fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1.5"/>
+    <g transform="translate(19 20)" fill="none" stroke="#F2F5F8" stroke-width="1.7"
+       stroke-linejoin="round" stroke-linecap="round">
+      <path d="M1 8.5 9 3l8 5.5V17a1 1 0 0 1-1 1h-4v-5H7v5H2a1 1 0 0 1-1-1z"/>
+    </g>
+    <text x="38" y="26" fill="#F2F5F8" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="15" font-weight="600">仓库</text>
+  </g>
+
+  <!-- 「出库 / OUT」次标签 -->
+  <g transform="translate(46 166) rotate(-13)">
+    <rect x="0" y="0" width="138" height="38" rx="10" fill="url(#gTagSecondary)"/>
+    <rect x="0.75" y="0.75" width="136.5" height="36.5" rx="9.25"
+          fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1.5"/>
+    <g transform="translate(18 19)" fill="none" stroke="#0C1220" stroke-width="1.7"
+       stroke-linejoin="round" stroke-linecap="round">
+      <circle cx="6" cy="16" r="1.4"/>
+      <circle cx="16" cy="16" r="1.4"/>
+      <path d="M0 1h3.4l2.3 11.2a1 1 0 0 0 1 .8h7.4a1 1 0 0 0 1-.8L18 5H4.2"/>
+    </g>
+    <text x="37" y="25" fill="#0C1220" font-family="Helvetica Neue, Arial, sans-serif"
+          font-size="14" font-weight="600">出库</text>
+  </g>
+
+  <!-- ============ 地面投影（先画，避免压住主体） ============ -->
+  <ellipse cx="268" cy="404" rx="86" ry="20" fill="#000000" opacity="0.42" filter="url(#fSoft)"/>
+  <ellipse cx="452" cy="286" rx="70" ry="17" fill="#000000" opacity="0.34" filter="url(#fSoft)"/>
+  <ellipse cx="196" cy="330" rx="58" ry="14" fill="#000000" opacity="0.30" filter="url(#fSoft)"/>
+
+  <!-- ============ 中景：等距立方体（周转箱） ============ -->
+  <!-- ============ 后景：主球体（大） ============ -->
+  <!-- 参考图中球体与图标是并置关系。这里把主球体放在立方体「之前」绘制，
+       使箱体压住球体下缘，读作前后层次而非球体悬空遮挡箱面。 -->
+  <g transform="translate(258 226)">
+    <circle cx="0" cy="0" r="58" fill="url(#gOrbPrimary)"/>
+    <circle cx="0" cy="0" r="58" fill="url(#gRimLight)"/>
+    <ellipse cx="-19" cy="-22" rx="18" ry="14" fill="#FFFFFF" opacity="0.5"
+             filter="url(#fSpecular)"/>
+    <ellipse cx="-24" cy="-27" rx="7.5" ry="5.5" fill="#FFFFFF" opacity="0.78"
+             filter="url(#fSpecular)"/>
+    <circle cx="0" cy="0" r="58" fill="none" stroke="#0C1220"
+            stroke-opacity="0.34" stroke-width="1.2"/>
+  </g>
+
+  <!-- ============ 中景：等距立方体（周转箱） ============ -->
+  <!-- 采用 2:1 等距投影：顶面菱形 + 左右两个侧面 -->
+  <g transform="translate(196 268)">
+    <!-- 顶面 -->
+    <path d="M0 40 L56 10 L112 40 L56 70 Z" fill="url(#gCubeTop)"/>
+    <!-- 右侧面（受光） -->
+    <path d="M112 40 L112 108 L56 138 L56 70 Z" fill="url(#gCubeRight)"/>
+    <!-- 左侧面（背光） -->
+    <path d="M0 40 L0 108 L56 138 L56 70 Z" fill="url(#gCubeLeft)"/>
+    <!-- 顶面描边：强化等距棱线 -->
+    <path d="M0 40 L56 10 L112 40 L56 70 Z" fill="none"
+          stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="1.4"/>
+    <!-- 中棱高光 -->
+    <path d="M56 70 L56 138" stroke="#FFFFFF" stroke-opacity="0.34" stroke-width="1.4"/>
+    <!-- 侧面横向分隔线，暗示箱体层-->
+    <path d="M0 74 L56 104 L112 74" fill="none"
+          stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1.2"/>
+    <!-- 顶面上的箱格线 -->
+    <path d="M28 25 L84 55" stroke="#8A96A3" stroke-opacity="0.4" stroke-width="1.1"/>
+    <path d="M84 25 L28 55" stroke="#8A96A3" stroke-opacity="0.4" stroke-width="1.1"/>
+  </g>
+
+  <!-- 箱体上的条码标签：贴在右侧面（受光面）上
+       位置由等距几何算出——右侧面中部 (84, 78.8) 局部坐标，
+       换算到全局为 (308, 346.8)，矩形宽 44 故回退半宽做左上角定位。 -->
+  <g transform="translate(286 347) skewY(-26.57)" opacity="0.92">
+    <rect x="0" y="0" width="44" height="14" rx="2.5" fill="#F2F5F8" fill-opacity="0.92"/>
+    <g fill="#4A5563" opacity="0.78">
+      <rect x="4" y="3.2" width="1.7" height="7.6"/>
+      <rect x="7.2" y="3.2" width="1.1" height="7.6"/>
+      <rect x="10" y="3.2" width="2" height="7.6"/>
+      <rect x="13.8" y="3.2" width="1.1" height="7.6"/>
+      <rect x="16.6" y="3.2" width="1.7" height="7.6"/>
+      <rect x="20.4" y="3.2" width="1.1" height="7.6"/>
+      <rect x="23.2" y="3.2" width="1.9" height="7.6"/>
+      <rect x="27" y="3.2" width="1.3" height="7.6"/>
+      <rect x="30.2" y="3.2" width="1.9" height="7.6"/>
+      <rect x="34" y="3.2" width="1.1" height="7.6"/>
+      <rect x="36.8" y="3.2" width="2.2" height="7.6"/>
+    </g>
+  </g>
+
+  <!-- ============ 次球体（青灰，小，左下，位于箱体前方） ============ -->
+  <g transform="translate(150 358)">
+    <circle cx="0" cy="0" r="36" fill="url(#gOrbTeal)"/>
+    <circle cx="0" cy="0" r="36" fill="url(#gRimLight)"/>
+    <ellipse cx="-12" cy="-14" rx="10.5" ry="8" fill="#FFFFFF" opacity="0.5"
+             filter="url(#fSpecular)"/>
+    <ellipse cx="-15" cy="-17" rx="4.5" ry="3.4" fill="#FFFFFF" opacity="0.72"
+             filter="url(#fSpecular)"/>
+    <circle cx="0" cy="0" r="36" fill="none" stroke="#0C1220"
+            stroke-opacity="0.32" stroke-width="1.1"/>
+  </g>
+
+  <!-- ============ 应用图标（右上，参考图核心元素） ============ -->
+  <g transform="translate(452 232) rotate(-8)">
+    <!-- 投影 -->
+    <rect x="-8" y="10" width="128" height="128" rx="34" fill="#000000"
+          opacity="0.36" filter="url(#fSoft)"/>
+    <!-- 底板 -->
+    <rect x="0" y="0" width="112" height="112" rx="30" fill="url(#gAppTile)"/>
+    <!-- 内描边，模拟玻璃边缘 -->
+    <rect x="1.5" y="1.5" width="109" height="109" rx="28.5" fill="none"
+          stroke="#FFFFFF" stroke-opacity="0.62" stroke-width="3"/>
+    <!-- 内部图标：仓库 + 扫码，取两者叠合 -->
+    <g transform="translate(56 54)" fill="none" stroke="#1A1A1A" stroke-width="6"
+       stroke-linejoin="round" stroke-linecap="round" opacity="0.9">
+      <!-- 屋顶 -->
+      <path d="M-24 -6 L0 -20 L24 -6"/>
+      <!-- 库体 -->
+      <path d="M-19 -3 V18 a2 2 0 0 0 2 2 h34 a2 2 0 0 0 2-2 V-3"/>
+      <!-- 中柱（分隔） -->
+      <path d="M0 -3 V20"/>
+      <!-- 扫描角标：呼应「盘点」 -->
+      <path d="M-12 6 h6 M6 6 h6" stroke-width="4.4"/>
+    </g>
+  </g>
+
+  <!-- ============ 前景：小球 + 数据标签 ============ -->
+
+  <!-- 右下小球（呼应参考图底部的圆形控件） -->
+  <g transform="translate(508 376)">
+    <ellipse cx="0" cy="28" rx="24" ry="7" fill="#000000" opacity="0.36" filter="url(#fSoftSmall)"/>
+    <!-- 用线性渐变而非纯白，避免读作色块 -->
+    <circle cx="0" cy="0" r="25" fill="url(#gOrbLight)"/>
+    <circle cx="0" cy="0" r="25" fill="url(#gRimLight)"/>
+    <ellipse cx="-8.5" cy="-10" rx="8.5" ry="6.2" fill="#FFFFFF" opacity="0.85"
+             filter="url(#fSpecular)"/>
+    <ellipse cx="-10" cy="-12" rx="3.6" ry="2.6" fill="#FFFFFF" opacity="0.95"
+             filter="url(#fSpecular)"/>
+    <!-- 底部反光弧，暗示球体与地面的接触 -->
+    <path d="M-15 15 A 25 25 0 0 0 15 15" fill="none" stroke="#AFC4D8"
+          stroke-opacity="0.2" stroke-width="1.4"/>
+    <circle cx="0" cy="0" r="25" fill="none" stroke="#0C1220"
+            stroke-opacity="0.32" stroke-width="1.1"/>
+  </g>
+
+  <!-- 「盘点」圆标：深底白字，做视觉收尾 -->
+  <g transform="translate(392 424)">
+    <ellipse cx="0" cy="30" rx="27" ry="8" fill="#000000" opacity="0.32" filter="url(#fSoftSmall)"/>
+    <circle cx="0" cy="0" r="28" fill="url(#gTagPrimary)"/>
+    <circle cx="0" cy="0" r="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1.5"/>
+    <g transform="translate(0 -1)" fill="none" stroke="#F2F5F8" stroke-width="2"
+       stroke-linejoin="round" stroke-linecap="round">
+      <path d="M-8 -9 v-4 h4 M8 -9 v-4 h-4 M-8 9 v4 h4 M8 9 v4 h-4"/>
+      <rect x="-5" y="-5" width="10" height="10" rx="1.5"/>
+    </g>
+  </g>
+
+  <!-- ============ 能量连线：呼应参考图的轨道线 ============ -->
+  <g stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1.2" fill="none">
+    <path d="M268 236 Q 356 186 452 232"/>
+    <path d="M176 344 Q 224 296 268 236"/>
+    <path d="M330 268 Q 400 300 452 232" stroke-dasharray="4 6"/>
+  </g>
+
+  <!-- 连线端点小圆 -->
+  <g fill="#FFFFFF" fill-opacity="0.3">
+    <circle cx="268" cy="236" r="3"/>
+    <circle cx="452" cy="232" r="3"/>
+    <circle cx="176" cy="344" r="2.6"/>
+  </g>
+</svg></div></body></html>

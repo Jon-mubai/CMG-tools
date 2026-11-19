@@ -1,10 +1,14 @@
 {
-  "name": "cmg-tools",
+  "name": "cmg-wms",
+  "version": "3.0.0",
   "private": true,
-  "version": "1.0.0",
-  "description": "WMS-Tec cucumber inventory monorepo",
+  "description": "CMG WMS — 前端 Vite + NestJS + PostgreSQL",
   "scripts": {
-    "build:frontend": "node frontend/scripts/build.js",
-    "start:backend": "node backend/src/server.js"
+    "dev:api": "npm run start:dev --prefix apps/api",
+    "dev:web": "npm run dev --prefix apps/web",
+    "install:all": "npm install --prefix apps/api && npm install --prefix apps/web",
+    "start:bg": "echo Windows: 双击 scripts/start-silent.vbs  |  Linux: bash scripts/start.sh",
+    "stop:bg": "echo Windows: 双击 scripts/stop-silent.vbs   |  Linux: bash scripts/stop.sh",
+    "dev:web-react": "npm run dev --prefix apps/web-react"
   }
 }

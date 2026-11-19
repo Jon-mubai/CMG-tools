@@ -1,0 +1,64 @@
+/*
+ * Author: zcl (MuBai)
+ * Date: 2026-10
+ * Role: Full-Stack Developer
+ */
+/* css/components/07-components-btn.css — extracted from inventory-check.html */
+/* ===== 按钮 ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 16px;
+      border-radius: var(--radius-sm);
+      /* 统一 1px 描边槽：primary 用透明描边占位，保证各变体内容基线与高度完全一致 */
+      border: 1px solid transparent;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    /* 按钮内图标统一 15px，避免不同按钮图标大小参差 */
+    .btn iconify-icon { flex-shrink: 0; }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-primary:active { background: var(--primary-dark); transform: scale(0.97); }
+    .btn-danger {
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .btn-danger:hover { opacity: 0.8; }
+    .btn-outline {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-bg); }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .btn-ghost:hover { background: var(--primary-bg); color: var(--primary); }
+    .btn-sm { height: 30px; padding: 0 12px; font-size: 13px; border-radius: 7px; }
+    .btn:disabled { opacity: 0.4; pointer-events: none; }
+
+    /* 工具栏内层容器：靠 margin-left:auto 推到行尾，隐藏时用 none 而非 flex */
+    .toolbar-split { align-items: center; flex-wrap: wrap; }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* 清空数据靠右，与左侧导出/下载组留出安全间距（隐藏时 display:none，margin 自然不生效） */
+    .toolbar-split > #importToolbar { margin-left: auto; padding-left: 24px; }
